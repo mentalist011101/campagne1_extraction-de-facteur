@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from donnees.exemple import charger_exemple_10_personnes
-from m2_facteurs.factorisation import produit_booleen
+from m2_facteurs.factorisation import nb_facteurs_pour_couverture, produit_booleen
 from m2_facteurs.fca import est_concept
 from m2_facteurs.grecon import grecon
 
@@ -103,3 +103,12 @@ def test_egalite_ordre_lexicographique_des_intentions():
 	I = np.array([[1, 0, 0, 1, 1], [1, 1, 1, 0, 0]], dtype=bool)
 	premier = grecon(I, nb_max_facteurs=1).facteurs[0]
 	assert premier.intention.tolist() == [True, True, True, False, False]
+
+
+def test_nb_facteurs_pour_couverture(exemple):
+	# Couvertures cumulées : 8, 14, 18, 22, 25, 27, 29, 30 croix sur 30
+	I, objets, attributs = exemple
+	resultat = grecon(I)
+	assert nb_facteurs_pour_couverture(resultat, 0.8) == 5
+	assert nb_facteurs_pour_couverture(resultat, 0.9) == 6   # 27/30 : cible atteinte exactement
+	assert nb_facteurs_pour_couverture(resultat, 1.0) == 8

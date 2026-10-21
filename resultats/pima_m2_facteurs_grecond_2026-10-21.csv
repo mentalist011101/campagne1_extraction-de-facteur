@@ -1,0 +1,27 @@
+facteur,intention,taille_extension,croix_nouvelles,couverture_cumulee
+F1,grossesses<=2 ET age<=25,126,252,0.077
+F2,66<pression<=78,163,163,0.126
+F3,25<age<=37,158,158,0.174
+F4,glucose<=105,157,157,0.222
+F5,imc<=29.5,154,154,0.269
+F6,pedigree<=0.269,154,154,0.315
+F7,0.269<pedigree<=0.537,153,153,0.362
+F8,pedigree>0.537,153,153,0.408
+F9,105<glucose<=129,151,151,0.454
+F10,pression<=66,150,150,0.5
+F11,imc>34.6,150,150,0.545
+F12,glucose>129,149,149,0.591
+F13,29.5<imc<=34.6,148,148,0.635
+F14,grossesses>5 ET age>37,94,188,0.693
+F15,pression>78,128,128,0.731
+F16,2<grossesses<=5,116,116,0.767
+F17,pli_cutane<=25,114,114,0.801
+F18,25<pli_cutane<=33,113,113,0.836
+F19,pli_cutane>33,97,97,0.865
+F20,grossesses<=2,207,81,0.89
+F21,insuline<=90,81,81,0.914
+F22,90<insuline<=165,81,81,0.939
+F23,insuline>165,76,76,0.962
+F24,age>37,142,48,0.977
+F25,grossesses>5,137,43,0.99
+F26,age<=25,160,34,1.0

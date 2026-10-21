@@ -61,3 +61,11 @@ def construire_resultat(
 	total_croix = int(I.sum())
 	couverture_cumulee = (np.cumsum(croix_nouvelles) / total_croix).tolist()
 	return ResultatFactorisation(facteurs, A, B, croix_nouvelles, couverture_cumulee, trace)
+
+
+def nb_facteurs_pour_couverture(resultat: ResultatFactorisation, cible: float) -> int:
+	"""Plus petit nombre de facteurs dont la couverture cumulée atteint la cible (≥)."""
+	for k, couverture in enumerate(resultat.couverture_cumulee, start=1):
+		if couverture >= cible:
+			return k
+	raise ValueError(f"Couverture {cible} jamais atteinte (maximum {resultat.couverture_cumulee[-1]:.3f}).")

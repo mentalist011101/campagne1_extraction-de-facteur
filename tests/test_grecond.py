@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from donnees.exemple import charger_exemple_10_personnes
-from m2_facteurs.factorisation import produit_booleen
+from m2_facteurs.factorisation import nb_facteurs_pour_couverture, produit_booleen
 from m2_facteurs.fca import est_concept
 from m2_facteurs.grecon import grecon
 from m2_facteurs.grecond import grecond
@@ -111,3 +111,12 @@ def test_trace_dernier_pas_d_un_facteur_sans_attribut_retenu(exemple):
 	trace = grecond(I, trace=True).trace
 	pas_facteur_1 = [p for p in trace if p.numero_facteur == 1]
 	assert pas_facteur_1[-1].attribut_retenu is None
+
+
+def test_nb_facteurs_pour_couverture(exemple):
+	# Couvertures cumulées : 8, 14, 18, 21, 24, 27, 29, 30 croix sur 30
+	I, objets, attributs = exemple
+	resultat = grecond(I)
+	assert nb_facteurs_pour_couverture(resultat, 0.8) == 5   # 24/30 : cible atteinte exactement
+	assert nb_facteurs_pour_couverture(resultat, 0.9) == 6
+	assert nb_facteurs_pour_couverture(resultat, 1.0) == 8
