@@ -11,3 +11,11 @@
 ## 2026-10-21 — GreCon : départage des égalités
 - **Choix :** à nombre égal de croix nouvelles, on garde le concept de plus grande extension (règle fixée par `CLAUDE.md`). Si l'égalité persiste, on garde le concept dont l'intention, lue comme liste croissante d'indices d'attributs, vient en premier dans l'ordre lexicographique.
 - **Raison :** la seconde règle rend GreCon indépendant de l'algorithme d'énumération des concepts (CbO, fcapy…), et reste proche de la règle de GreConD (premier attribut dans l'ordre des colonnes).
+
+## 2026-10-21 — GreConD : trace
+- **Choix :** la trace est un champ optionnel `trace` (liste de `PasTrace`) de `ResultatFactorisation`, `None` par défaut (donc pour GreCon).
+- **Raison :** un seul champ en plus ne justifie pas un type de résultat propre à GreConD ; GreCon et GreConD gardent le même type de sortie.
+
+## 2026-10-21 — PyBMF comme vérification seulement
+- **Choix :** PyBMF installé depuis GitHub, commit `03c9b4364d480fa4445c10b6d65e93dcaedc74d6`. Absent de `requirements.txt` et des tests ; utilisé seulement par `experiences/comparer_pybmf.py`.
+- **Raison :** sa version de GreConD s'écarte de l'article (voir JOURNAL, étape 3) ; il ne peut pas servir de référence numérique exacte.
