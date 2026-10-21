@@ -22,6 +22,8 @@ URL_SOURCE = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-i
 COLONNES = [
 	"grossesses", "glucose", "pression", "pli_cutane", "insuline", "imc", "pedigree", "age", "classe",
 ]
+# Colonnes où un zéro est médicalement impossible, donc une valeur manquante
+COLONNES_ZERO_MANQUANT = ["glucose", "pression", "pli_cutane", "insuline", "imc"]
 
 
 def telecharger_pima() -> None:

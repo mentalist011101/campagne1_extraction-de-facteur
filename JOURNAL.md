@@ -26,3 +26,8 @@
 - **Source :** OpenML inaccessible depuis notre réseau ; CSV UCI via le miroir GitHub de J. Brownlee (voir DECISIONS.md, avec SHA-256).
 - **Résultats :** 768 objets, 500 négatifs / 268 positifs (34,9 %). Découpages 460 / 154 / 154, proportion de positifs 35,0 / 35,1 / 34,4 %. Zéros : glucose 5, pression 35, pli_cutane 227 (29,6 %), insuline 374 (48,7 %), imc 11 ; grossesses 111 (vraies valeurs).
 - **Questions ouvertes :** traitement des zéros-manquants avant la binarisation (étape 5), surtout insuline et pli_cutane.
+
+## 2026-10-21 — Étape 5 : M1 binarisation
+- **Fait :** `m1_binarisation/binarisation.py` (`apprendre_seuils`, `binariser`), constante `COLONNES_ZERO_MANQUANT` dans `donnees/pima.py`, script `experiences/binariser_pima.py`, 7 tests dans `tests/test_binarisation.py`.
+- **Résultats :** terciles appris sur l'apprentissage seul, zéros manquants exclus (option b). Seuils : glucose 105 / 129, insuline 90 / 165, pli_cutane 25 / 33, imc 29,5 / 34,6, age 25 / 37… Contextes 460 / 154 / 154 × 24 attributs, densités 0,298 / 0,298 / 0,297 (maximum 1/3 sans valeur manquante). Fichiers dans `resultats/pima_m1_*_2026-10-21.csv`.
+- **Questions ouvertes :** version de Pima sans valeurs manquantes, reportée : supprimer les patientes incomplètes (392 restantes) ou les colonnes insuline et pli_cutane ? Restreindre les découpages existants ou en créer de nouveaux ?

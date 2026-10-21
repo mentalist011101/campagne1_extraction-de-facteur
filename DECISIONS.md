@@ -31,3 +31,8 @@
 ## 2026-10-21 — Pima : source des données
 - **Choix :** CSV de l'UCI via le miroir GitHub de J. Brownlee, https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv, téléchargé le 2026-10-21 (SHA-256 du fichier source : 6bfe5d0f379d17a0e0819b996407e3c09bf80febd4287f2ed212190dfff154af).
 - **Raison :** OpenML (id 37) inaccessible depuis notre réseau (délai dépassé sur www.openml.org et api.openml.org). Même jeu UCI, même ordre de colonnes ; conformité vérifiée par les tests (768 objets, 500/268, zéros connus par variable).
+
+## 2026-10-21 — M1 : zéros manquants (option b)
+- **Choix :** pour glucose, pression, pli_cutane, insuline et imc, un zéro signifie « valeur inconnue » : les seuils sont calculés sur les valeurs non nulles de l'apprentissage, et un objet de valeur 0 ne reçoit aucun des trois attributs de la variable. grossesses n'est pas concernée (0 est une vraie valeur).
+- **Raison :** ni correction ni imputation ; seuils au sens médical (insuline : 0 et 94 avec les zéros, 90 et 165 sans) ; en FCA l'absence d'attribut exprime naturellement l'absence d'information ; pas d'attribut « manquant » qui créerait des facteurs reflétant la collecte des données plutôt que la médecine.
+- **Option pour plus tard :** une version de Pima sans les objets à valeur manquante sera créée pour mesurer l'impact de ce choix.
