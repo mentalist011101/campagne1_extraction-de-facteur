@@ -19,3 +19,15 @@
 ## 2026-10-21 — PyBMF comme vérification seulement
 - **Choix :** PyBMF installé depuis GitHub, commit `03c9b4364d480fa4445c10b6d65e93dcaedc74d6`. Absent de `requirements.txt` et des tests ; utilisé seulement par `experiences/comparer_pybmf.py`.
 - **Raison :** sa version de GreConD s'écarte de l'article (voir JOURNAL, étape 3) ; il ne peut pas servir de référence numérique exacte.
+
+## 2026-10-21 — Pima : noms des colonnes et codage de la classe
+- **Choix :** colonnes nommées dans la copie figée `donnees/pima.csv` : preg → grossesses, plas → glucose, pres → pression, skin → pli_cutane, insu → insuline, mass → imc, pedi → pedigree, age → age. Classe codée 1 = diabète (`tested_positive` dans OpenML), 0 = négatif.
+- **Raison :** noms lisibles pour les attributs binaires de M1 (`glucose<=99`…) ; codage 0/1 standard pour les modèles, le décodage vers des libellés lisibles se fera à l'affichage.
+
+## 2026-10-21 — Pima : copie figée et découpages
+- **Choix :** téléchargement unique, sauvegarde dans `donnees/pima.csv` versionné ; toute la chaîne lit ce fichier. Découpage stratifié en deux temps (60/40, puis 40 → 20/20), `random_state=42`, indices de lignes sauvegardés dans `donnees/decoupages/` ; la fonction de création refuse d'écraser des fichiers existants.
+- **Raison :** reproductibilité indépendante d'OpenML et du réseau ; découpages jamais régénérés (`CLAUDE.md`).
+
+## 2026-10-21 — Pima : source des données
+- **Choix :** CSV de l'UCI via le miroir GitHub de J. Brownlee, https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv, téléchargé le 2026-10-21 (SHA-256 du fichier source : 6bfe5d0f379d17a0e0819b996407e3c09bf80febd4287f2ed212190dfff154af).
+- **Raison :** OpenML (id 37) inaccessible depuis notre réseau (délai dépassé sur www.openml.org et api.openml.org). Même jeu UCI, même ordre de colonnes ; conformité vérifiée par les tests (768 objets, 500/268, zéros connus par variable).
