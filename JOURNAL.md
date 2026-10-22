@@ -47,3 +47,15 @@
 - **Résultats (validation, 154 patientes dont 54 de classe 1) :** données brutes : accuracy 0,734 à 0,753, F1 macro 0,701 à 0,727 (meilleur : MLP) ; données binarisées : accuracy 0,695 à 0,747, F1 macro 0,663 à 0,710 (meilleur : régression logistique). La binarisation coûte 1 à 4 points. Régression logistique et arbre (bruts) : mêmes scores par coïncidence, 26 désaccords. MLP binarisé : 0,95 sur l'apprentissage, surapprentissage.
 - **Incident :** MLP non convergé en 2000 itérations sur les données binarisées ; `max_iter=3000` (converge en 2344), test de non-convergence ajouté. Tests réorganisés (106 s → 24 s).
 - **Questions ouvertes :** réglage des hyperparamètres et imputation des zéros, reportés.
+
+## 2026-10-22 — Étape 9 : tableau de résultats sur le test
+- **Fait :** `experiences/evaluation.py` (`metriques`, `taux_accord`, `accuracy_decides`, 4 tests), script `experiences/tableau_resultats_pima.py`, tableau `resultats/pima_resultats_test_2026-10-22.csv` (16 classifieurs factoriels, 10 modèles classiques).
+- **Résultats (test, 154 patientes dont 53 de classe 1 ; « toujours 0 » = 0,656) :**
+  - GreCon et GreConD identiques ligne à ligne (mêmes 26 facteurs).
+  - Poids = précision : classe 1 presque jamais prédite (0 à 6 fois) ; accuracy 0,656 à 0,688, F1 macro 0,40 à 0,49. best-vote / précision / validation prédit toujours 0.
+  - Poids = accuracy : all-votes 0,669 / F1 0,533 (18 prédits en 1) ; best-vote 0,62–0,63 / F1 0,62–0,63 (90–95 prédits en 1, surprédiction). Poids apprentissage et validation : écart moyen 0,033, aucune prédiction changée en all-votes.
+  - Aucun x non couvert, aucune égalité (≈ 7 règles à un attribut par patiente) ; `accuracy_decides` = accuracy.
+  - Modèles classiques : meilleurs 0,740 (régression logistique brute et binarisée, forêt brute), F1 macro ≈ 0,70. Les 24 attributs suffisent : c'est le vote de M3 qui limite, pas la binarisation.
+  - Accord des classifieurs factoriels avec forêt et MLP : 0,64 à 0,75.
+  - Erreur type d'une accuracy ≈ ±0,037 sur 154 patientes : seuls l'écart M3 / meilleurs modèles et l'effondrement du F1 macro avec la précision sont nets.
+- **Questions ouvertes (phase 2) :** normaliser les votes par classe (21 règles votent 0, 5 votent 1) ; nombre de facteurs k < 26 ; règles en conflit ; facteurs plus riches (autre binarisation, intentions plus longues) ; l'accord modéré avec les modèles signale-t-il leurs erreurs ou la faiblesse de M3 ?

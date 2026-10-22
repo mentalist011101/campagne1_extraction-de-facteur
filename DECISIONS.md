@@ -54,3 +54,7 @@
 ## 2026-10-22 — MLP : plafond d'itérations
 - **Choix :** `max_iter=3000` au lieu de 2000.
 - **Raison :** sur les données binarisées, le MLP n'avait pas convergé en 2000 itérations (ConvergenceWarning) ; il converge en 2344. Seul le plafond change, les autres hyperparamètres restent par défaut. Accuracy de 0,95 sur l'apprentissage binarisé : surapprentissage probable, à surveiller.
+
+## 2026-10-22 — Tableau de résultats sur le test (étape 9)
+- **Choix :** 16 classifieurs factoriels = {GreCon, GreConD} × {all-votes, best-vote} × {poids sur apprentissage, sur validation} × {précision, accuracy} ; 10 modèles classiques (5 × {brutes, binarisées}), entraînés sur l'apprentissage seul. Taux d'accord des classifieurs factoriels avec la forêt aléatoire et le MLP, en version brute et binarisée (4 colonnes). Deux colonnes de diagnostic ajoutées : `accuracy_decides` (accuracy sur les x couverts et sans égalité) et `predits_classe_1`.
+- **Raison :** la variante accuracy change fortement les poids (étape 7) ; l'accord avec les modèles bruts prépare M5, celui avec les modèles binarisés compare à information égale ; les colonnes de diagnostic séparent l'effet de la classe par défaut et révèlent le déséquilibre de prédiction, utiles pour la phase 2.
