@@ -41,3 +41,9 @@
 - **Fait :** `m3_classifieurs/classifieur_factoriel.py` (`construire_regles`, `predire` all-votes / best-vote, `compter`, `decrire_facteurs`), 13 tests dans `tests/test_classifieur_factoriel.py`, script `experiences/regles_pima.py`.
 - **Résultats :** valeurs attendues retrouvées (F3 {Normal} → N, précision 0,75, accuracy 0,70 ; F1 {Adult, Male} écarté). Sur Pima, GreCon et GreConD donnent les mêmes 26 facteurs dans un ordre différent : à 100 % de couverture, leurs classifieurs seront identiques. Aucun facteur écarté. 21 règles votent 0, 5 votent 1 ; précision des règles de classe 1 entre 0,52 et 0,67, contre jusqu'à 0,91 pour la classe 0 ; l'accuracy favorise au contraire les règles de classe 1.
 - **Questions ouvertes :** all-votes avec précision risque de ne presque jamais prédire la classe 1 (F1 macro faible) ; GreCon et GreConD ne se distingueront qu'avec k < 26.
+
+## 2026-10-22 — Étape 8 : modèles classiques
+- **Fait :** `modeles_ml/modeles_classiques.py` (5 modèles, hyperparamètres par défaut, standardisation dans un Pipeline pour les données brutes), script `experiences/modeles_pima.py` (validation seulement), 10 tests dans `tests/test_modeles_classiques.py`.
+- **Résultats (validation, 154 patientes dont 54 de classe 1) :** données brutes : accuracy 0,734 à 0,753, F1 macro 0,701 à 0,727 (meilleur : MLP) ; données binarisées : accuracy 0,695 à 0,747, F1 macro 0,663 à 0,710 (meilleur : régression logistique). La binarisation coûte 1 à 4 points. Régression logistique et arbre (bruts) : mêmes scores par coïncidence, 26 désaccords. MLP binarisé : 0,95 sur l'apprentissage, surapprentissage.
+- **Incident :** MLP non convergé en 2000 itérations sur les données binarisées ; `max_iter=3000` (converge en 2344), test de non-convergence ajouté. Tests réorganisés (106 s → 24 s).
+- **Questions ouvertes :** réglage des hyperparamètres et imputation des zéros, reportés.

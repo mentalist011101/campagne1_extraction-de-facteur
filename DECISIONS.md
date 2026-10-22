@@ -46,3 +46,11 @@
 - **Égalité de scores :** au moins deux classes au score maximal (égalité exacte) → classe majoritaire de l'apprentissage, x marqué.
 - **Tableau par facteur :** intention, taille de l'extension, classe, objets couverts en validation, précision et accuracy sur l'apprentissage et la validation, drapeau « écarté » et raison (égalité de classe, ou aucun objet couvert en validation).
 - **Raison :** décisions de l'étudiant, d'après Makhalova & Trnecka (2019).
+
+## 2026-10-22 — Modèles classiques de comparaison
+- **Choix :** hyperparamètres par défaut de sklearn (aucun réglage), `random_state=42` ; MLP à une couche cachée de 16 neurones, `max_iter=3000`. Données brutes : `Pipeline(StandardScaler, modèle)`, zéros manquants laissés tels quels. Données binarisées : contextes de M1, sans standardisation.
+- **Raison :** comparaison simple et reproductible, sans avantage de réglage par rapport aux classifieurs factoriels (non réglés eux non plus). Le réglage des hyperparamètres et l'imputation des zéros pourront être testés plus tard. Asymétrie assumée : les zéros sont des valeurs pour les modèles bruts, et une absence d'information (option b) pour les données binarisées.
+
+## 2026-10-22 — MLP : plafond d'itérations
+- **Choix :** `max_iter=3000` au lieu de 2000.
+- **Raison :** sur les données binarisées, le MLP n'avait pas convergé en 2000 itérations (ConvergenceWarning) ; il converge en 2344. Seul le plafond change, les autres hyperparamètres restent par défaut. Accuracy de 0,95 sur l'apprentissage binarisé : surapprentissage probable, à surveiller.
