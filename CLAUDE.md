@@ -31,8 +31,8 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 ## Phase en cours
 
 **Phase 1 terminée** (M1, M2, M3 sur Pima, comparés à des modèles classiques) : voir `JOURNAL.md`.
-**Phase 2 : diagnostic des erreurs de M3, puis une stratégie d'ensemble.**
-Instructions détaillées : `docs/instructions_phase2.md` (à fournir).
+**Phase 2 : donner de la structure aux facteurs** (échelle interordinale, poids lift, puis mushroom si le temps le permet).
+Instructions détaillées : `docs/instructions_phase2.md`. Le test reste scellé pendant toute la phase.
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille
