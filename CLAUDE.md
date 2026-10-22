@@ -17,21 +17,22 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
                                                                                ─► M7 évaluation
 ```
 
-| Module | Dossier | Rôle |
-|---|---|---|
-| M1 | `m1_binarisation/` | Données → contexte formel binaire |
-| M2 | `m2_facteurs/` | I ≈ A ∘ B : GreCon, GreConD (puis éventuellement MDLGreConD) |
-| M3 | `m3_classifieurs/` | Facteur → règle « intention → classe » avec un poids ; vote all-votes / best-vote |
-| — | (à venir) | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) |
-| M4 | (à venir) | Modèle profond, d'abord un MLP pour le tabulaire. Jamais modifié par la chaîne. |
-| M5 | (à venir) | Verdict sur ŷ(x) : confirmée, contestée ou inconnue, puis un score |
-| M6 | (à venir) | Explication : facteurs qui soutiennent ŷ, facteurs qui s'y opposent |
-| M7 | `experiences/` | Évaluation : détection d'erreurs, courbes accuracy–rejet, comparaison au softmax |
+| Module | Dossier | Rôle | État |
+|---|---|---|---|
+| M1 | `m1_binarisation/` | Données → contexte formel binaire | terminé (phase 1) |
+| M2 | `m2_facteurs/` | I ≈ A ∘ B : GreCon, GreConD (puis éventuellement MDLGreConD) | terminé : GreCon, GreConD |
+| M3 | `m3_classifieurs/` | Facteur → règle « intention → classe » avec un poids ; vote all-votes / best-vote | terminé : poids précision ou accuracy, sur apprentissage ou validation |
+| — | (à venir) | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) | phase 2 |
+| M4 | (à venir) | Modèle profond, d'abord un MLP pour le tabulaire. Jamais modifié par la chaîne. | phase 3 |
+| M5 | (à venir) | Verdict sur ŷ(x) : confirmée, contestée ou inconnue, puis un score | phase 3 |
+| M6 | (à venir) | Explication : facteurs qui soutiennent ŷ, facteurs qui s'y opposent | phase 3 |
+| M7 | `experiences/` | Évaluation : détection d'erreurs, courbes accuracy–rejet, comparaison au softmax | phase 3 |
 
 ## Phase en cours
 
-**Phase 1 : M1, M2 et M3 sur Pima, comparés à des modèles classiques.**
-Instructions détaillées : `docs/instructions_phase1.md`.
+**Phase 1 terminée** (M1, M2, M3 sur Pima, comparés à des modèles classiques) : voir `JOURNAL.md`.
+**Phase 2 : diagnostic des erreurs de M3, puis une stratégie d'ensemble.**
+Instructions détaillées : `docs/instructions_phase2.md` (à fournir).
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille
@@ -61,7 +62,8 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 - **M2 ne voit pas la classe.** La factorisation se fait sur les attributs seuls ; la classe n'intervient qu'en M3.
 - **Un facteur est un concept formel**, et A ∘ B ne crée jamais une croix absente de I. Teste-le.
 - **Rien ne se cache.** Les x couverts par aucun facteur, et les égalités de vote, sont comptés et rapportés à part. Ils ne sont jamais noyés dans l'accuracy.
-- **Les règles d'égalité sont écrites et testées.** GreConD : premier attribut dans l'ordre des colonnes. GreCon : plus grande extension. Classe d'un facteur à égalité : facteur écarté.
+- **Les règles d'égalité sont écrites et testées.** GreConD : premier attribut dans l'ordre des colonnes. GreCon : plus grande extension, puis intention première dans l'ordre lexicographique. Classe d'un facteur à égalité : facteur écarté.
+- **Données figées.** Pima se lit uniquement depuis la copie figée `donnees/pima.csv`. Les zéros des colonnes de `COLONNES_ZERO_MANQUANT` sont des valeurs inconnues : sans attribut en M1 (option b).
 - **Graine fixe** : `random_state=42` partout.
 
 ## Conventions de code
@@ -73,12 +75,14 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 - M2 accepte n'importe quel contexte binaire : un échantillon, ou un sous-ensemble d'attributs, pour les méthodes d'ensemble à venir.
 - M3 renvoie, pour chaque x : la classe prédite, le score par classe, la liste des facteurs qui couvrent x (avec leur classe et leur poids), et un drapeau « non couvert » ou « égalité ».
 - Les résultats sont sauvegardés en CSV dans `resultats/`, avec un nom qui indique l'expérience et la date.
+- Les expériences obtiennent les contextes de Pima par `experiences/contextes_pima.py`, qui n'apprend jamais les seuils hors de l'apprentissage.
 
 ## Commandes
 
 ```bash
 pip install -r requirements.txt
-python -m pytest -q                  # tous les tests
+python -m pytest -q                  # tous les tests (environ 1 minute)
+python -m pytest -q -p no:warnings   # idem, sans les avertissements de skmine (dépendance de fcapy)
 python -m experiences.<script>       # une expérience
 ```
 
@@ -92,7 +96,8 @@ python -m experiences.<script>       # une expérience
 
 - R. Belohlavek, V. Vychodil, « Discovery of optimal factors in binary data via a novel method of matrix decomposition », *Journal of Computer and System Sciences* 76(1), 2010 : GreCon et GreConD.
 - T. Makhalova, M. Trnecka, « A Study of Boolean Matrix Factorization Under Supervised Settings », ICFCA 2019 : facteurs → classifieurs, all-votes et best-vote.
-- PyBMF (https://github.com/PreferredAI/PyBMF) : sert seulement à vérifier notre GreConD.
+- PyBMF (https://github.com/PreferredAI/PyBMF), commit 03c9b43 : son GreConD s'écarte de l'article (facteur final perdu, mise à jour au milieu du parcours des attributs, voir JOURNAL étape 3). Il ne sert pas de référence numérique.
+- fcapy 0.1.4.5 : référence pour l'énumération des concepts, dans les tests uniquement.
 
 ## Ce fichier
 
