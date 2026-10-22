@@ -55,7 +55,16 @@
   - Poids = précision : classe 1 presque jamais prédite (0 à 6 fois) ; accuracy 0,656 à 0,688, F1 macro 0,40 à 0,49. best-vote / précision / validation prédit toujours 0.
   - Poids = accuracy : all-votes 0,669 / F1 0,533 (18 prédits en 1) ; best-vote 0,62–0,63 / F1 0,62–0,63 (90–95 prédits en 1, surprédiction). Poids apprentissage et validation : écart moyen 0,033, aucune prédiction changée en all-votes.
   - Aucun x non couvert, aucune égalité (≈ 7 règles à un attribut par patiente) ; `accuracy_decides` = accuracy.
-  - Modèles classiques : meilleurs 0,740 (régression logistique brute et binarisée, forêt brute), F1 macro ≈ 0,70. Les 24 attributs suffisent : c'est le vote de M3 qui limite, pas la binarisation.
+  - Modèles classiques : meilleurs 0,740 (régression logistique brute et binarisée, forêt brute), F1 macro ≈ 0,70.
+  - La régression logistique sur les données binarisées est elle aussi un vote pondéré des 24 attributs. Avec ses poids appris, elle atteint 0,740, contre environ 0,68 pour M3 : les poids comptent. Mais si les 26 facteurs sont presque tous des attributs isolés, les facteurs n'apportent aucune structure au-delà des attributs. La limite vient alors de l'association binarisation + BMF, pas seulement du vote.
   - Accord des classifieurs factoriels avec forêt et MLP : 0,64 à 0,75.
   - Erreur type d'une accuracy ≈ ±0,037 sur 154 patientes : seuls l'écart M3 / meilleurs modèles et l'effondrement du F1 macro avec la précision sont nets.
+  - Makhalova & Trnecka obtiennent 0,66 sur Pima (all-votes, précision), pour une classe majoritaire de 0,650. Notre résultat reproduit le leur.
+- **Vérifications sur l'apprentissage (sans le test) :**
+  - a. 24 facteurs sur 26 n'ont qu'un attribut ; les deux autres, F1 {grossesses<=2, age<=25} et F2 {grossesses>5, age>37}, relient grossesses et âge, les deux variables les plus corrélées.
+  - b. Densité 0,2982 = 3292 / (460 × 24), avec 3292 = 460 × 8 − 388 valeurs manquantes (3 + 19 + 136 + 222 + 8) ; 236 patientes sur 460 ont leurs 8 attributs. La valeur attendue de 8/24 = 0,333 n'est atteinte qu'avec l'option (a) : elle était fausse, car elle ignorait le choix de l'étape 5 (option b, conservée).
+  - c. Zéros : glucose 3, pression 19, pli_cutane 136, insuline 222, imc 8 ; 224 patientes ont au moins un zéro. Imbrication complète : les 136 patientes à pli_cutane = 0 ont toutes insuline = 0.
+  - d. Aucun facteur ne correspond aux zéros (impossible avec l'option b : un zéro ne donne aucun attribut). Effet indirect seulement : les colonnes de l'insuline ne comptent qu'environ 80 patientes (238 insulines connues), d'où F21 à F23 en fin de liste.
+  - Correction : à l'étape 5, « 227 patientes avec insuline et pli cutané manquants » avait été avancé sans vérification ; 227 est le nombre de pli_cutane = 0 sur les 768 patientes. L'imbrication est maintenant vérifiée sur l'apprentissage (136/136).
+- **Règle à partir de maintenant :** le test n'est plus utilisé avant le tableau final.
 - **Questions ouvertes (phase 2) :** normaliser les votes par classe (21 règles votent 0, 5 votent 1) ; nombre de facteurs k < 26 ; règles en conflit ; facteurs plus riches (autre binarisation, intentions plus longues) ; l'accord modéré avec les modèles signale-t-il leurs erreurs ou la faiblesse de M3 ?
