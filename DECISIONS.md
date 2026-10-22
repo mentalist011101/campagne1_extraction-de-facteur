@@ -36,3 +36,13 @@
 - **Choix :** pour glucose, pression, pli_cutane, insuline et imc, un zéro signifie « valeur inconnue » : les seuils sont calculés sur les valeurs non nulles de l'apprentissage, et un objet de valeur 0 ne reçoit aucun des trois attributs de la variable. grossesses n'est pas concernée (0 est une vraie valeur).
 - **Raison :** ni correction ni imputation ; seuils au sens médical (insuline : 0 et 94 avec les zéros, 90 et 165 sans) ; en FCA l'absence d'attribut exprime naturellement l'absence d'information ; pas d'attribut « manquant » qui créerait des facteurs reflétant la collecte des données plutôt que la médecine.
 - **Option pour plus tard :** une version de Pima sans les objets à valeur manquante sera créée pour mesurer l'impact de ce choix.
+
+## 2026-10-22 — M3 : définitions des classifieurs factoriels
+- **Accuracy d'une règle :** accuracy(f, c) = (tp + tn) / |S|, la règle étant vue comme un classifieur binaire « c si couvert, pas c sinon » (Makhalova & Trnecka 2019, §3.1). Test : sur les 10 personnes, F3 {Normal} → N, accuracy 0,70, précision 0,75.
+- **Classe d'un facteur :** toujours la classe majoritaire de son extension sur l'apprentissage ; égalité → facteur écarté. La validation ne sert qu'à recalculer le poids.
+- **Poids sur la validation :** une règle qui ne couvre aucun objet de validation est écartée (pour la précision comme pour l'accuracy) et comptée à part.
+- **Nombre de facteurs :** par défaut tous les facteurs jusqu'à 100 % de couverture, paramètre k pour en utiliser moins ; le nombre de facteurs est noté pour chaque algorithme.
+- **x couvert seulement par des facteurs écartés :** compté comme non couvert (aucune règle ne vote).
+- **Égalité de scores :** au moins deux classes au score maximal (égalité exacte) → classe majoritaire de l'apprentissage, x marqué.
+- **Tableau par facteur :** intention, taille de l'extension, classe, objets couverts en validation, précision et accuracy sur l'apprentissage et la validation, drapeau « écarté » et raison (égalité de classe, ou aucun objet couvert en validation).
+- **Raison :** décisions de l'étudiant, d'après Makhalova & Trnecka (2019).
