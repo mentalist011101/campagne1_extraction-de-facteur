@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold, train_test_split
 
 DOSSIER_DONNEES = Path(__file__).parent
 CHEMIN_PIMA = DOSSIER_DONNEES / "pima.csv"
@@ -63,6 +63,34 @@ def charger_decoupages() -> dict[str, np.ndarray]:
 		nom: pd.read_csv(_chemin_decoupage(nom))["indice"].to_numpy()
 		for nom in NOMS_DECOUPAGES
 	}
+
+
+def creer_plis_cv10() -> None:
+	"""10 plis stratifiés (random_state=42) sur apprentissage + validation, sauvegardés une fois pour toutes.
+
+	Le test de la phase 1 reste scellé : il n'entre dans aucun pli.
+	"""
+	chemin = DOSSIER_DECOUPAGES / "cv10_pima.csv"
+	if chemin.exists():
+		raise FileExistsError(f"{chemin} existe déjà : les plis ne sont jamais régénérés.")
+	X, y = charger_pima()
+	d = charger_decoupages()
+	tous = np.concatenate([d["apprentissage"], d["validation"]])
+	decoupeur = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+	lignes = []
+	for numero_pli, (positions_app, positions_eval) in enumerate(decoupeur.split(tous, y.iloc[tous])):
+		lignes += [{"indice": int(i), "pli": numero_pli} for i in tous[positions_eval]]
+	pd.DataFrame(lignes).to_csv(chemin, index=False)
+
+
+def charger_plis_cv10() -> list[tuple[np.ndarray, np.ndarray]]:
+	"""Pour chaque pli : (indices de la partie d'apprentissage, indices de la partie évaluée)."""
+	table = pd.read_csv(DOSSIER_DECOUPAGES / "cv10_pima.csv")
+	plis = []
+	for numero_pli in sorted(table["pli"].unique()):
+		dans_le_pli = table["pli"] == numero_pli
+		plis.append((table.loc[~dans_le_pli, "indice"].to_numpy(), table.loc[dans_le_pli, "indice"].to_numpy()))
+	return plis
 
 
 def _chemin_decoupage(nom: str) -> Path:

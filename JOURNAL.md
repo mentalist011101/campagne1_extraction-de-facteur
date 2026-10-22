@@ -68,3 +68,11 @@
   - Correction : à l'étape 5, « 227 patientes avec insuline et pli cutané manquants » avait été avancé sans vérification ; 227 est le nombre de pli_cutane = 0 sur les 768 patientes. L'imbrication est maintenant vérifiée sur l'apprentissage (136/136).
 - **Règle à partir de maintenant :** le test n'est plus utilisé avant le tableau final.
 - **Questions ouvertes (phase 2) :** normaliser les votes par classe (21 règles votent 0, 5 votent 1) ; nombre de facteurs k < 26 ; règles en conflit ; facteurs plus riches (autre binarisation, intentions plus longues) ; l'accord modéré avec les modèles signale-t-il leurs erreurs ou la faiblesse de M3 ?
+
+## 2026-10-22 — Étape 10 : protocole de validation croisée et référence
+- **Fait :** plis `donnees/decoupages/cv10_pima.csv` (10 plis stratifiés sur les 614 patientes apprentissage + validation, test scellé), `creer_plis_cv10` / `charger_plis_cv10` dans `donnees/pima.py`, `contextes_pli` (seuils réappris par pli, option b), script `experiences/cv_reference_pima.py`, 8 tests dans `tests/test_plis.py`. `metriques` : `zero_division=0` explicite (même valeur, sans avertissement).
+- **Résultats (moyenne ± écart-type, 61 patientes évaluées par pli dont 21,5 de classe 1) :** règle majoritaire 0,650 ± 0,006 (F1 macro 0,394) ; all-votes précision 0,689 ± 0,025 (F1 0,533, 4,8 prédits en 1) ; best-vote précision 0,656 ± 0,015 (F1 0,432, 1,4 prédits en 1) ; all-votes accuracy 0,686 ± 0,067 (F1 0,605) ; best-vote accuracy 0,617 ± 0,070 (F1 0,615, 42 prédits en 1). 26 facteurs dans chaque pli ; aucun non-couvert ni égalité. Conforme à l'attendu (0,65 à 0,69, F1 faible avec la précision).
+- **Notes d'interprétation (les critères restent figés) :**
+  1. La configuration principale de H2 (best-vote + précision, nominale) a un F1 macro de 0,432, presque celui de la règle majoritaire (0,394). H2 pourrait être confirmée simplement parce que l'interordinale prédit plus souvent la classe 1. Si H2 est confirmée, il faudra vérifier que le gain va de pair avec des intentions plus longues parmi les facteurs qui votent (colonne de l'étape 13).
+  2. Les parties d'apprentissage des plis se recouvrent à environ 89 % : les écarts-types sous-estiment l'incertitude. On ne conclut pas sur de petits écarts de moyennes.
+- **Questions ouvertes :** aucune.

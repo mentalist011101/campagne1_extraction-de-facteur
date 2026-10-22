@@ -10,7 +10,8 @@ def metriques(y_vrai, y_pred) -> dict:
 	"""Accuracy, F1 macro, et nombre de x prédits en classe 1."""
 	return {
 		"accuracy": float(accuracy_score(y_vrai, y_pred)),
-		"f1_macro": float(f1_score(y_vrai, y_pred, average="macro")),
+		# zero_division=0 : valeur par défaut de sklearn, sans l'avertissement (règle majoritaire)
+		"f1_macro": float(f1_score(y_vrai, y_pred, average="macro", zero_division=0)),
 		"predits_classe_1": int((np.asarray(y_pred) == 1).sum()),
 	}
 
