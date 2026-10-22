@@ -57,13 +57,14 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 ## Règles scientifiques à ne jamais enfreindre
 
 - **Pas de fuite d'information.** Les seuils de binarisation, les facteurs et les poids sont appris sur l'apprentissage, ou sur la validation pour les variantes de poids. Ils ne sont **jamais** appris sur le test.
-- **Le test ne sert qu'aux tableaux finaux.** Aucun réglage de paramètre ne s'y fait.
+- **Le test ne sert qu'aux tableaux finaux.** Aucun réglage de paramètre ne s'y fait, et aucune vérification non plus : les contrôles se font sur l'apprentissage ou la validation.
 - **Découpages figés.** Les indices apprentissage / validation / test sont sauvegardés dans `donnees/decoupages/` et réutilisés par toute la chaîne. Ne jamais les régénérer.
 - **M2 ne voit pas la classe.** La factorisation se fait sur les attributs seuls ; la classe n'intervient qu'en M3.
 - **Un facteur est un concept formel**, et A ∘ B ne crée jamais une croix absente de I. Teste-le.
 - **Rien ne se cache.** Les x couverts par aucun facteur, et les égalités de vote, sont comptés et rapportés à part. Ils ne sont jamais noyés dans l'accuracy.
 - **Les règles d'égalité sont écrites et testées.** GreConD : premier attribut dans l'ordre des colonnes. GreCon : plus grande extension, puis intention première dans l'ordre lexicographique. Classe d'un facteur à égalité : facteur écarté.
-- **Données figées.** Pima se lit uniquement depuis la copie figée `donnees/pima.csv`. Les zéros des colonnes de `COLONNES_ZERO_MANQUANT` sont des valeurs inconnues : sans attribut en M1 (option b).
+- **Données figées.** Pima se lit uniquement depuis la copie figée `donnees/pima.csv`. Les zéros des colonnes de `COLONNES_ZERO_MANQUANT` sont des valeurs inconnues : sans attribut en M1 (option b). La densité du contexte est donc inférieure à 1/3 (0,298 sur l'apprentissage) ; 8/24 n'est atteint que sans traitement des zéros.
+- **Comparaison à information égale.** M3 se compare d'abord aux modèles entraînés sur les données binarisées. Les modèles bruts voient les zéros manquants comme des valeurs (voir `DECISIONS.md`) : la comparaison avec eux n'est pas à traitement égal.
 - **Graine fixe** : `random_state=42` partout.
 
 ## Conventions de code
