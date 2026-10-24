@@ -76,3 +76,9 @@
   1. La configuration principale de H2 (best-vote + précision, nominale) a un F1 macro de 0,432, presque celui de la règle majoritaire (0,394). H2 pourrait être confirmée simplement parce que l'interordinale prédit plus souvent la classe 1. Si H2 est confirmée, il faudra vérifier que le gain va de pair avec des intentions plus longues parmi les facteurs qui votent (colonne de l'étape 13).
   2. Les parties d'apprentissage des plis se recouvrent à environ 89 % : les écarts-types sous-estiment l'incertitude. On ne conclut pas sur de petits écarts de moyennes.
 - **Questions ouvertes :** aucune.
+
+## 2026-10-24 — Étape 11 : M1, échelle interordinale
+- **Fait :** paramètre `echelle` dans `binariser`, `contextes_pima` et `contextes_pli` ; 4 attributs par variable (`v<=t1`, `v<=t2`, `v>t1`, `v>t2`), mêmes seuils ; 6 tests ajoutés dans `tests/test_binarisation.py`.
+- **Résultats :** tableau des instructions reproduit ; 32 attributs ; densité de l'apprentissage 6584 / 14720 = 0,4473 (= 2 × 3292 croix nominales) ; t1 < t2 strictement pour chaque variable, sur l'apprentissage complet et dans les 10 plis ; échelle nominale inchangée (fichiers de la phase 1 identiques octet par octet).
+- **Prédiction écrite avant l'étape 12 :** « En interordinale, une colonne couvre environ 2/3 des patientes (≈ 307 croix). Une conjonction de 2 ou 3 attributs larges de variables indépendantes couvre ≈ 408 croix. H1 devrait donc être confirmée même sans corrélation entre les variables. Des intentions longues ne prouvent pas une structure liée à la classe : c'est H2 qui le dira. »
+- **Questions ouvertes :** aucune.

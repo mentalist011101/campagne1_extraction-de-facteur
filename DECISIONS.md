@@ -75,3 +75,8 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Choix :** validation croisée stratifiée à 10 plis (`StratifiedKFold`, `shuffle=True`, `random_state=42`) sur les 614 patientes apprentissage + validation de la phase 1, plis tirés une fois et sauvegardés dans `donnees/decoupages/cv10_pima.csv`. Dans chaque pli, seuils, facteurs, classes et poids, modèles sont réappris sur la partie d'apprentissage du pli ; option (b) conservée pour les valeurs manquantes ; règle majoritaire calculée sur la partie d'apprentissage du pli ; nombre de facteurs noté dans chaque pli. Variante « poids sur la validation » abandonnée. Écart-type : pandas, ddof = 1.
 - **Mushroom :** miroir UCI accepté si OpenML reste inaccessible. Vérifications : 8124 lignes, 22 variables + la classe, 4208 comestibles / 3916 vénéneux, 2480 « ? » toutes dans stalk-root ; tout écart est signalé, rien n'est corrigé.
 - **Raison :** décisions de l'étudiant (instructions de phase 2 et précisions du 2026-10-22).
+
+## 2026-10-24 — M1 : échelle interordinale
+- **Choix :** paramètre `echelle` (`"nominale"` par défaut, ou `"interordinale"`) dans `binariser`, `contextes_pima` et `contextes_pli`. Mêmes seuils (terciles appris sur l'apprentissage, ou sur la partie d'apprentissage du pli). Quatre attributs par variable, dans l'ordre `v<=t1`, `v<=t2`, `v>t1`, `v>t2` ; valeur manquante (option b) : aucun des quatre.
+- **Source d'arbitraire connue :** cet ordre des colonnes fixe le choix de GreConD en cas d'égalité (premier attribut dans l'ordre des colonnes). À l'étape 12, le nombre de choix de GreConD faits sur une égalité sera compté grâce à la trace.
+- **Raison :** instructions de la phase 2 ; ordre conservé tel quel, sans optimisation.

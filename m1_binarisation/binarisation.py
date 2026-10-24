@@ -30,9 +30,13 @@ def binariser(
 	X: pd.DataFrame,
 	seuils: dict[str, tuple[float, float]],
 	colonnes_zero_manquant: list[str],
+	echelle: str = "nominale",
 ) -> tuple[np.ndarray, list[str]]:
-	"""Contexte formel (objets × 3 attributs par variable) et noms lisibles des attributs.
+	"""Contexte formel et noms lisibles des attributs.
 
+	echelle = "nominale" : 3 attributs par variable, intervalles disjoints (bas, moyen, haut).
+	echelle = "interordinale" : 4 attributs par variable, v<=t1, v<=t2, v>t1, v>t2 ;
+	l'intervalle moyen s'écrit alors comme la conjonction {v>t1, v<=t2}.
 	Les seuils ne sont jamais recalculés ici : X peut être un seul objet.
 	"""
 	colonnes_binaires = []
@@ -44,15 +48,30 @@ def binariser(
 		else:
 			connue = np.ones(len(valeurs), dtype=bool)
 
-		colonnes_binaires += [
-			connue & (valeurs <= bas),
-			connue & (valeurs > bas) & (valeurs <= haut),
-			connue & (valeurs > haut),
-		]
 		# Seuils affichés avec 4 chiffres significatifs ; la comparaison utilise la valeur exacte
-		noms_attributs += [
-			f"{colonne}<={bas:.4g}",
-			f"{bas:.4g}<{colonne}<={haut:.4g}",
-			f"{colonne}>{haut:.4g}",
-		]
+		if echelle == "nominale":
+			colonnes_binaires += [
+				connue & (valeurs <= bas),
+				connue & (valeurs > bas) & (valeurs <= haut),
+				connue & (valeurs > haut),
+			]
+			noms_attributs += [
+				f"{colonne}<={bas:.4g}",
+				f"{bas:.4g}<{colonne}<={haut:.4g}",
+				f"{colonne}>{haut:.4g}",
+			]
+		else:
+			# Ordre des colonnes fixé (voir DECISIONS.md) : il décide des égalités de GreConD
+			colonnes_binaires += [
+				connue & (valeurs <= bas),
+				connue & (valeurs <= haut),
+				connue & (valeurs > bas),
+				connue & (valeurs > haut),
+			]
+			noms_attributs += [
+				f"{colonne}<={bas:.4g}",
+				f"{colonne}<={haut:.4g}",
+				f"{colonne}>{bas:.4g}",
+				f"{colonne}>{haut:.4g}",
+			]
 	return np.column_stack(colonnes_binaires), noms_attributs

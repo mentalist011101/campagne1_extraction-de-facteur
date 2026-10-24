@@ -7,7 +7,7 @@ from donnees.pima import COLONNES_ZERO_MANQUANT, charger_decoupages, charger_pim
 from m1_binarisation.binarisation import apprendre_seuils, binariser
 
 
-def contextes_pima() -> tuple[dict[str, np.ndarray], list[str], dict[str, pd.Series], dict[str, tuple[float, float]]]:
+def contextes_pima(echelle: str = "nominale") -> tuple[dict[str, np.ndarray], list[str], dict[str, pd.Series], dict[str, tuple[float, float]]]:
 	"""Contextes I et classes y de chaque découpage, noms d'attributs, seuils.
 
 	Les seuils sont appris sur l'apprentissage seul, puis appliqués aux trois découpages.
@@ -19,7 +19,7 @@ def contextes_pima() -> tuple[dict[str, np.ndarray], list[str], dict[str, pd.Ser
 	contextes = {}
 	classes = {}
 	for nom, indices in decoupages.items():
-		contextes[nom], noms_attributs = binariser(X.iloc[indices], seuils, COLONNES_ZERO_MANQUANT)
+		contextes[nom], noms_attributs = binariser(X.iloc[indices], seuils, COLONNES_ZERO_MANQUANT, echelle)
 		classes[nom] = y.iloc[indices]
 	return contextes, noms_attributs, classes, seuils
 
@@ -27,6 +27,7 @@ def contextes_pima() -> tuple[dict[str, np.ndarray], list[str], dict[str, pd.Ser
 def contextes_pli(
 	indices_app: np.ndarray,
 	indices_eval: np.ndarray,
+	echelle: str = "nominale",
 ) -> tuple[np.ndarray, np.ndarray, list[str], pd.Series, pd.Series, dict[str, tuple[float, float]]]:
 	"""Contextes d'un pli de validation croisée : seuils réappris sur la partie d'apprentissage du pli.
 
@@ -34,6 +35,6 @@ def contextes_pli(
 	"""
 	X, y = charger_pima()
 	seuils = apprendre_seuils(X.iloc[indices_app], COLONNES_ZERO_MANQUANT)
-	I_app, noms_attributs = binariser(X.iloc[indices_app], seuils, COLONNES_ZERO_MANQUANT)
-	I_eval, _ = binariser(X.iloc[indices_eval], seuils, COLONNES_ZERO_MANQUANT)
+	I_app, noms_attributs = binariser(X.iloc[indices_app], seuils, COLONNES_ZERO_MANQUANT, echelle)
+	I_eval, _ = binariser(X.iloc[indices_eval], seuils, COLONNES_ZERO_MANQUANT, echelle)
 	return I_app, I_eval, noms_attributs, y.iloc[indices_app], y.iloc[indices_eval], seuils
