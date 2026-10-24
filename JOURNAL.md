@@ -82,3 +82,14 @@
 - **Résultats :** tableau des instructions reproduit ; 32 attributs ; densité de l'apprentissage 6584 / 14720 = 0,4473 (= 2 × 3292 croix nominales) ; t1 < t2 strictement pour chaque variable, sur l'apprentissage complet et dans les 10 plis ; échelle nominale inchangée (fichiers de la phase 1 identiques octet par octet).
 - **Prédiction écrite avant l'étape 12 :** « En interordinale, une colonne couvre environ 2/3 des patientes (≈ 307 croix). Une conjonction de 2 ou 3 attributs larges de variables indépendantes couvre ≈ 408 croix. H1 devrait donc être confirmée même sans corrélation entre les variables. Des intentions longues ne prouvent pas une structure liée à la classe : c'est H2 qui le dira. »
 - **Questions ouvertes :** aucune.
+
+## 2026-10-24 — Étape 12 : structure des facteurs selon l'échelle
+- **Fait :** `enumerer_concepts(I, nb_max)` et `TropDeConcepts` (fca.py), `choix_sur_egalite` (grecond.py), 3 tests ajoutés ; scripts `experiences/structure_facteurs_pima.py` et `experiences/grecon_interordinale_pima.py`.
+- **Résultats (GreConD, apprentissage de la phase 1, 460 patientes) :**
+  - Nominale : 24 attributs, densité 0,2982, 17 / 21 / 26 facteurs pour 80 / 90 / 100 %, 92,3 % de facteurs à un seul attribut, longueur moyenne 1,08.
+  - Interordinale : 32 attributs, densité 0,4473, 20 / 26 / 45 facteurs, **2,2 % de facteurs à un seul attribut → H1 confirmée** (critère < 50 %), longueur moyenne 2,76 ; longueurs 1 : 1, 2 : 15, 3 : 24, 4 : 4, 5 : 1.
+  - Réserve : la fermeture ajoute les attributs impliqués (`grossesses<=2` implique `grossesses<=5`), ce qui gonfle les longueurs. En variables distinctes, 26,7 % des facteurs interordinaux ne portent que sur une variable (1,89 variable en moyenne) ; H1 resterait confirmée avec ce décompte.
+  - Choix de GreConD sur une égalité : 5 en nominale, 12 en interordinale, tous avec des fermetures différentes (l'ordre des colonnes change réellement les facteurs).
+  - Proportion de classe 1 par facteur (descriptif) : médiane 0,340 / 0,373, part < 0,2 : 0,231 / 0,267, part > 0,5 : 0,192 / 0,178. Les facteurs sont plus longs, pas plus purs vis-à-vis de la classe (conforme à la prédiction de l'étape 11).
+  - GreCon interordinal : 150 555 concepts (énumération 35 s, sous la limite de 200 000), 39 facteurs en 309 s (total 369 s, sous 10 minutes). Facteurs différents de GreConD : 14 communs, 25 propres à GreCon, 31 propres à GreConD (identiques en phase 1). Chiffres relevés à l'écran, sans CSV.
+- **Décision de priorité :** l'étape 13 se fait telle que prévue (elle clôt H2 et H3), puis l'étape 14 (mushroom) devient prioritaire. La piste binarisation de Pima s'arrête après l'étape 13. Elle devient une limite documentée et une perspective.

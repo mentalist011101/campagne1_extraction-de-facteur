@@ -6,7 +6,7 @@ from fcapy.context import FormalContext
 from fcapy.lattice import ConceptLattice
 
 from donnees.exemple import charger_exemple_10_personnes
-from m2_facteurs.fca import enumerer_concepts, est_concept, extension, intention
+from m2_facteurs.fca import TropDeConcepts, enumerer_concepts, est_concept, extension, intention
 
 
 @pytest.fixture
@@ -96,3 +96,10 @@ def test_meme_concepts_que_fcapy(exemple):
 		for c in enumerer_concepts(I)
 	}
 	assert obtenus == attendus
+
+
+def test_nb_max_leve_trop_de_concepts(exemple):
+	I, objets, attributs = exemple
+	with pytest.raises(TropDeConcepts):
+		enumerer_concepts(I, nb_max=10)
+	assert len(enumerer_concepts(I, nb_max=22)) == 22

@@ -1,0 +1,13 @@
+,nominale,interordinale
+attributs,24.0,32.0
+densite,0.2982,0.4473
+facteurs_80%,17.0,20.0
+facteurs_90%,21.0,26.0
+facteurs_100%,26.0,45.0
+part_un_attribut,0.923,0.022
+longueur_moyenne,1.08,2.76
+choix_sur_egalite,5.0,12.0
+dont_fermetures_differentes,5.0,12.0
+mediane_proportion_classe_1,0.34,0.373
+part_proportion_sous_0.2,0.231,0.267
+part_proportion_au_dessus_0.5,0.192,0.178

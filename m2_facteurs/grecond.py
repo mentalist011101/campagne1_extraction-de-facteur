@@ -9,10 +9,24 @@ data via a novel method of matrix decomposition », JCSS 76(1), 2010.
 Fonctionne sur n'importe quel contexte binaire (échantillon, sous-ensemble d'attributs…).
 """
 
+from dataclasses import dataclass
+
 import numpy as np
 
 from m2_facteurs.factorisation import PasTrace, ResultatFactorisation, construire_resultat
 from m2_facteurs.fca import Concept, extension, intention
+
+
+@dataclass(frozen=True)
+class ChoixEgalite:
+	"""Un pas de GreConD où le meilleur compte était atteint par plusieurs attributs."""
+
+	numero_facteur: int
+	numero_pas: int
+	attributs_a_egalite: list[int]
+	valeur: int
+	# Faux si tous les attributs à égalité mènent à la même fermeture : l'égalité ne change rien
+	fermetures_differentes: bool
 
 
 def grecond(
@@ -94,3 +108,27 @@ def _construire_un_facteur(
 
 	# Pas 4 : le facteur est (D↓, D)
 	return Concept(extension(I, D), D), V
+
+
+def choix_sur_egalite(I: np.ndarray, trace: list[PasTrace]) -> list[ChoixEgalite]:
+	"""Pas qui ont retenu un attribut alors que d'autres avaient la même valeur.
+
+	Les fermetures sont recalculées après coup depuis l'intention de départ du pas.
+	"""
+	choix = []
+	for pas in trace:
+		if pas.attribut_retenu is None:
+			continue
+		meilleure_valeur = pas.valeurs[pas.attribut_retenu]
+		a_egalite = [j for j, valeur in enumerate(pas.valeurs) if valeur == meilleure_valeur]
+		if len(a_egalite) < 2:
+			continue
+		fermetures = set()
+		for j in a_egalite:
+			candidat = pas.intention_depart.copy()
+			candidat[j] = True
+			fermetures.add(tuple(intention(I, extension(I, candidat))))
+		choix.append(ChoixEgalite(
+			pas.numero_facteur, pas.numero_pas, a_egalite, meilleure_valeur, len(fermetures) > 1
+		))
+	return choix

@@ -14,6 +14,14 @@ from dataclasses import dataclass
 import numpy as np
 
 
+class TropDeConcepts(Exception):
+	"""L'énumération a dépassé le nombre maximal de concepts demandé."""
+
+	def __init__(self, nb_max: int):
+		super().__init__(f"Plus de {nb_max} concepts : énumération abandonnée.")
+		self.nb_max = nb_max
+
+
 @dataclass(frozen=True)
 class Concept:
 	"""Concept formel (extension, intention) : deux masques booléens."""
@@ -41,7 +49,7 @@ def est_concept(I: np.ndarray, objets: np.ndarray, attributs: np.ndarray) -> boo
 	)
 
 
-def enumerer_concepts(I: np.ndarray) -> list[Concept]:
+def enumerer_concepts(I: np.ndarray, nb_max: int | None = None) -> list[Concept]:
 	"""Tous les concepts formels de I, par Close-by-One.
 
 	On part du concept du haut (∅↓, ∅↓↑). Depuis un concept (A, B), on essaie
@@ -50,6 +58,7 @@ def enumerer_concepts(I: np.ndarray) -> list[Concept]:
 	Le test canonique garde (C, D) seulement si D n'ajoute aucun attribut
 	d'indice < j absent de B ; sinon ce concept est atteint par une autre branche.
 	Chaque concept est ainsi produit exactement une fois.
+	Si nb_max est donné, l'énumération s'arrête dès qu'il est dépassé (TropDeConcepts).
 	"""
 	nb_attributs = I.shape[1]
 	concepts: list[Concept] = []
@@ -57,7 +66,7 @@ def enumerer_concepts(I: np.ndarray) -> list[Concept]:
 	aucun_attribut = np.zeros(nb_attributs, dtype=bool)
 	ext_haut = extension(I, aucun_attribut)
 	int_haut = intention(I, ext_haut)
-	_generer_depuis(I, ext_haut, int_haut, 0, concepts)
+	_generer_depuis(I, ext_haut, int_haut, 0, concepts, nb_max)
 	return concepts
 
 
@@ -67,9 +76,12 @@ def _generer_depuis(
 	int_courante: np.ndarray,
 	premier_attribut: int,
 	concepts: list[Concept],
+	nb_max: int | None,
 ) -> None:
 	"""Étape récursive de CbO : enregistre (A, B) puis explore ses descendants."""
 	concepts.append(Concept(ext_courante, int_courante))
+	if nb_max is not None and len(concepts) > nb_max:
+		raise TropDeConcepts(nb_max)
 	nb_attributs = I.shape[1]
 
 	for j in range(premier_attribut, nb_attributs):
@@ -79,4 +91,4 @@ def _generer_depuis(
 		nouvelle_int = intention(I, nouvelle_ext)
 		# Test canonique : sur les attributs d'indice < j, rien de nouveau
 		if np.array_equal(nouvelle_int[:j], int_courante[:j]):
-			_generer_depuis(I, nouvelle_ext, nouvelle_int, j + 1, concepts)
+			_generer_depuis(I, nouvelle_ext, nouvelle_int, j + 1, concepts, nb_max)

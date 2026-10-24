@@ -1,0 +1,27 @@
+facteur,intention,longueur,taille_extension,croix_nouvelles,proportion_classe_1
+F1,grossesses<=2 ET age<=25,2,126,252,0.159
+F2,66<pression<=78,1,163,163,0.344
+F3,25<age<=37,1,158,158,0.361
+F4,glucose<=105,1,157,157,0.134
+F5,imc<=29.5,1,154,154,0.162
+F6,pedigree<=0.269,1,154,154,0.299
+F7,0.269<pedigree<=0.537,1,153,153,0.307
+F8,pedigree>0.537,1,153,153,0.444
+F9,105<glucose<=129,1,151,151,0.258
+F10,pression<=66,1,150,150,0.233
+F11,imc>34.6,1,150,150,0.487
+F12,glucose>129,1,149,149,0.671
+F13,29.5<imc<=34.6,1,148,148,0.412
+F14,grossesses>5 ET age>37,2,94,188,0.553
+F15,pression>78,1,128,128,0.469
+F16,2<grossesses<=5,1,116,116,0.336
+F17,pli_cutane<=25,1,114,114,0.193
+F18,25<pli_cutane<=33,1,113,113,0.327
+F19,pli_cutane>33,1,97,97,0.495
+F20,grossesses<=2,1,207,81,0.246
+F21,insuline<=90,1,81,81,0.086
+F22,90<insuline<=165,1,81,81,0.383
+F23,insuline>165,1,76,76,0.553
+F24,age>37,1,142,48,0.521
+F25,grossesses>5,1,137,43,0.518
+F26,age<=25,1,160,34,0.188

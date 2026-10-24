@@ -1,0 +1,46 @@
+facteur,intention,longueur,taille_extension,croix_nouvelles,proportion_classe_1
+F1,grossesses<=2 ET grossesses<=5 ET glucose<=129 ET pression<=78 ET age<=37,5,123,615,0.081
+F2,imc<=29.5 ET imc<=34.6 ET pedigree<=0.537,3,110,330,0.155
+F3,glucose>105 ET imc>29.5 ET pedigree>0.269,3,150,450,0.573
+F4,grossesses>2 ET pression>66 ET age>25,3,170,510,0.471
+F5,glucose<=105 ET glucose<=129 ET pedigree>0.269,3,104,264,0.163
+F6,glucose>105 ET pedigree<=0.269 ET pedigree<=0.537,3,101,261,0.416
+F7,grossesses<=5 ET age<=25 ET age<=37,3,157,297,0.185
+F8,pli_cutane<=25 ET pli_cutane<=33 ET imc<=34.6,3,105,267,0.171
+F9,pression<=66 ET pression<=78 ET imc<=34.6,3,118,224,0.203
+F10,pli_cutane>25 ET imc>29.5 ET imc>34.6,3,104,255,0.452
+F11,grossesses>2 ET grossesses>5 ET age>25 ET age>37,4,94,218,0.553
+F12,grossesses<=5 ET pression>66 ET pression>78,3,78,183,0.359
+F13,pedigree>0.269 ET pedigree>0.537,2,153,178,0.444
+F14,glucose>105 ET glucose>129 ET age>25,3,120,169,0.675
+F15,insuline<=90 ET insuline<=165,2,81,162,0.086
+F16,pression<=78 ET insuline>90,2,112,166,0.411
+F17,imc>29.5 ET pedigree<=0.537,2,191,218,0.387
+F18,glucose<=129 ET age<=37 ET age>25,3,107,193,0.206
+F19,pli_cutane>25 ET pli_cutane>33,2,97,129,0.495
+F20,pli_cutane<=33 ET pli_cutane>25,2,113,187,0.327
+F21,grossesses<=2 ET grossesses<=5 ET pression>66,3,107,135,0.28
+F22,insuline>90 ET insuline>165,2,76,101,0.553
+F23,grossesses>2 ET pression<=78 ET imc<=34.6,3,121,134,0.347
+F24,insuline<=165 ET insuline>90,2,81,101,0.383
+F25,glucose<=105 ET glucose<=129 ET pedigree<=0.269 ET pedigree<=0.537,4,53,124,0.075
+F26,grossesses<=5 ET glucose>105 ET age<=37,3,161,94,0.373
+F27,glucose<=129 ET age>25 ET age>37,3,72,77,0.375
+F28,imc<=29.5 ET imc<=34.6 ET pedigree>0.269,3,87,80,0.149
+F29,grossesses>2 ET grossesses>5 ET age<=37,3,43,68,0.442
+F30,grossesses>2 ET pression>66 ET pression>78,3,83,55,0.53
+F31,pression<=78 ET imc>29.5 ET imc>34.6,3,87,53,0.391
+F32,imc<=34.6 ET imc>29.5,2,148,55,0.412
+F33,grossesses<=2 ET grossesses<=5 ET pression<=66 ET pression<=78,4,92,42,0.185
+F34,grossesses<=5 ET glucose<=129,2,235,45,0.145
+F35,grossesses<=5 ET glucose>105 ET glucose>129,3,85,32,0.647
+F36,imc>29.5 ET imc>34.6,2,150,22,0.487
+F37,glucose>105 ET age>25 ET age>37,3,108,27,0.583
+F38,pli_cutane<=25 ET pli_cutane<=33,2,114,18,0.193
+F39,pression<=78 ET pression>66,2,163,13,0.344
+F40,grossesses<=2 ET grossesses<=5,2,207,8,0.246
+F41,grossesses>2 ET pression<=66 ET pression<=78,3,58,8,0.31
+F42,grossesses>2 ET glucose<=129 ET age<=25 ET age<=37,4,26,6,0.154
+F43,grossesses>2 ET glucose>105,2,182,4,0.527
+F44,pedigree<=0.537 ET pedigree>0.269 ET age<=37,3,117,5,0.248
+F45,grossesses>2,1,253,1,0.435

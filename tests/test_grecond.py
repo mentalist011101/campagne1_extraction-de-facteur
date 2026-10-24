@@ -7,7 +7,7 @@ from donnees.exemple import charger_exemple_10_personnes
 from m2_facteurs.factorisation import nb_facteurs_pour_couverture, produit_booleen
 from m2_facteurs.fca import est_concept
 from m2_facteurs.grecon import grecon
-from m2_facteurs.grecond import grecond
+from m2_facteurs.grecond import choix_sur_egalite, grecond
 
 
 @pytest.fixture
@@ -120,3 +120,29 @@ def test_nb_facteurs_pour_couverture(exemple):
 	assert nb_facteurs_pour_couverture(resultat, 0.8) == 5   # 24/30 : cible atteinte exactement
 	assert nb_facteurs_pour_couverture(resultat, 0.9) == 6
 	assert nb_facteurs_pour_couverture(resultat, 1.0) == 8
+
+
+def test_choix_sur_egalite_dans_l_exemple(exemple):
+	# F1 pas 1 : Adult et Overweight à 6, fermetures {Adult} et {Adult, Male, Overweight}
+	# F4 pas 1 : Underweight et Obese à 3, fermetures {Elderly, Underweight} et {Female, Obese}
+	I, objets, attributs = exemple
+	resultat = grecond(I, trace=True)
+	choix = {(c.numero_facteur, c.numero_pas): c for c in choix_sur_egalite(I, resultat.trace)}
+	f1 = choix[(1, 1)]
+	assert [attributs[j] for j in f1.attributs_a_egalite] == ["Adult", "Overweight"]
+	assert f1.valeur == 6
+	assert f1.fermetures_differentes
+	f4 = choix[(4, 1)]
+	assert [attributs[j] for j in f4.attributs_a_egalite] == ["Underweight", "Obese"]
+	assert f4.valeur == 3
+	assert f4.fermetures_differentes
+
+
+def test_choix_sur_egalite_sans_consequence():
+	# a1 et a2 vont toujours ensemble : même fermeture {a1, a2}, l'égalité ne change rien
+	I = np.array([[1, 1], [1, 1], [0, 0]], dtype=bool)
+	resultat = grecond(I, trace=True)
+	choix = choix_sur_egalite(I, resultat.trace)
+	assert len(choix) == 1
+	assert choix[0].attributs_a_egalite == [0, 1]
+	assert not choix[0].fermetures_differentes
