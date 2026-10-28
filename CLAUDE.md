@@ -31,8 +31,9 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 ## Phase en cours
 
 **Phase 1 terminée** (M1, M2, M3 sur Pima, comparés à des modèles classiques) : voir `JOURNAL.md`.
-**Phase 2 : donner de la structure aux facteurs** (échelle interordinale, poids lift, puis mushroom si le temps le permet).
-Instructions détaillées : `docs/instructions_phase2.md`. Le test reste scellé pendant toute la phase.
+**Phase 2 terminée** (échelle interordinale, poids lift, mushroom) : voir `JOURNAL.md`.
+**Phase 3 (légère) : premières méthodes d'ensemble sur les facteurs** (stacking, bagging) sur congressional voting.
+Instructions : `docs/instructions_phase3_ensembles.md` (jeu de données : voir `DECISIONS.md`). Le test reste scellé.
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille

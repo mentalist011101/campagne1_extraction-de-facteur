@@ -100,3 +100,19 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Règle :** mushroom avec B = 10 sacs si le meilleur M3 reste nettement sous 0,99 et si GreConD prend moins d'environ 30 s par pli ; sinon congressional voting (OpenML « vote » : votes y/n/?, « ? » sans attribut, codage nominal ; vérifier 435 lignes, 16 variables et la répartition des classes).
 - Sur un jeu catégoriel, une seule échelle : les mentions « pour chaque échelle » et la comparaison nominale / interordinale sont ignorées. H5, H6 et D1 restent identiques. Le « meilleur M3 » de référence est la meilleure configuration de M3 sur ce jeu, choisie AVANT de lancer la phase 3 et écrite dans ce fichier.
 - **Raison :** décisions de l'étudiant.
+
+## 2026-10-28 — Phase 3 : jeu de données
+- **Choix :** congressional voting (OpenML « vote », version 1), conformément à la règle fixée avant l'étape 14 (meilleur M3 sur mushroom : 0,998, pas nettement sous 0,99). Le fichier `docs/instructions_phase3_ensembles.md` prévoyait Pima et les deux échelles : il a été écrit avant cette règle, **la règle l'emporte**.
+- **Données :** copie figée `donnees/vote.csv` (libellés d'origine, « ? » conservé). Vérifié : 435 lignes, 16 variables, 267 démocrates / 168 républicains, valeurs y / n / ?, 392 « ? » sur 203 lignes. Découpage 60/20/20 stratifié figé (261 / 87 / 87, `random_state=42`), test scellé ; 10 plis stratifiés sur apprentissage + validation (348 représentants, 34 ou 35 évalués par pli).
+- **Classe :** 1 = républicain, 0 = démocrate (classe minoritaire codée 1, comme pour Pima et mushroom ; sans effet sur le F1 macro des critères).
+- **Binarisation :** nominale (catégorielle) avec `apprendre_modalites` / `binariser_categoriel`, apprise sur la partie d'apprentissage du pli, attributs constants retirés. **« ? » = abstention réelle, sans attribut (option b)** : choix gardé par cohérence avec Pima et mushroom, et noté comme **limite** (une abstention peut porter une information politique).
+- Une seule échelle : les mentions « pour chaque échelle » et la comparaison nominale / interordinale du fichier de phase 3 sont ignorées.
+
+## 2026-10-28 — Phase 3 : M3 de référence et hypothèses H5 à H7, fixés AVANT toute expérience
+- **M3 de référence, fixé à l'avance sans grille préalable :** best-vote + précision (schéma recommandé par Makhalova & Trnecka, et le meilleur sur mushroom). GreConD à 100 % de couverture, classes et poids sur la partie d'apprentissage du pli.
+- **H5 — Le bagging améliore M3.** Critère : le F1 macro de M3 (best-vote + précision) avec bagging dépasse strictement celui de la même configuration sans bagging dans au moins 8 plis sur 10.
+- **H6 — Le stacking améliore M3.** Critère : le F1 macro du stacking dépasse strictement celui de M3 seul (best-vote + précision) dans au moins 8 plis sur 10.
+- **H7 — Non-infériorité.** Critère, pour le stacking et pour le bagging, séparément : F1 macro moyen sur les 10 plis ≥ (F1 macro moyen de la meilleure des références classiques — régression logistique, forêt aléatoire, Naive Bayes de Bernoulli, sur les mêmes attributs binaires) − 0,02. La forêt aléatoire est ajoutée au tableau de l'étape 18.
+- Une égalité exacte sur un pli ne compte pas comme une victoire. **D1** (descriptive, sans critère) : pli par pli, stacking contre régression logistique sur les attributs.
+- **Stacking, absence de fuite :** en stacking classique, il faut des prédictions hors pli des classifieurs de base, puisqu'ils ont vu la classe. Ici, la matrice A (objets × facteurs) est calculée **sans la classe** (GreConD sur les attributs seuls) : seule la régression logistique utilise y_app.
+- **Raison :** décisions de l'étudiant du 2026-10-28.
