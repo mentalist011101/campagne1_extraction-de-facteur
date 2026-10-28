@@ -116,3 +116,10 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - Une égalité exacte sur un pli ne compte pas comme une victoire. **D1** (descriptive, sans critère) : pli par pli, stacking contre régression logistique sur les attributs.
 - **Stacking, absence de fuite :** en stacking classique, il faut des prédictions hors pli des classifieurs de base, puisqu'ils ont vu la classe. Ici, la matrice A (objets × facteurs) est calculée **sans la classe** (GreConD sur les attributs seuls) : seule la régression logistique utilise y_app.
 - **Raison :** décisions de l'étudiant du 2026-10-28.
+
+## 2026-10-28 — Étape 17 : bagging, choix non fixés par les instructions
+- **Binarisation dans les sacs :** la binarisation du pli (modalités apprises sur sa partie d'apprentissage) est réutilisée telle quelle dans chaque sac, sans réapprentissage ; les M3 des sacs travaillent ainsi sur les mêmes attributs que le M3 seul.
+- **x non couvert dans un sac :** il reçoit la classe majoritaire de la partie d'apprentissage du pli, comme pour le M3 seul, et il est compté dans les non-couverts de ce sac.
+- **Tirage :** sac b = `np.random.default_rng(42 + b).integers(0, n_app, n_app)`, avec remise ; configuration best-vote + précision (M3 de référence) ; agrégation par vote majoritaire, égalité → classe majoritaire du pli (impossible avec B = 25 impair).
+- **Étape 18 :** pour H5 et H6, à titre descriptif, victoires, défaites, égalités et p-valeur bilatérale du test du signe (égalités exclues).
+- **Raison :** décisions de l'étudiant (plan de l'étape 17).
