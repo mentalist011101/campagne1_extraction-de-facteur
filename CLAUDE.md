@@ -19,21 +19,19 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 
 | Module | Dossier | Rôle | État |
 |---|---|---|---|
-| M1 | `m1_binarisation/` | Données → contexte formel binaire | terminé (phase 1) |
-| M2 | `m2_facteurs/` | I ≈ A ∘ B : GreCon, GreConD (puis éventuellement MDLGreConD) | terminé : GreCon, GreConD |
-| M3 | `m3_classifieurs/` | Facteur → règle « intention → classe » avec un poids ; vote all-votes / best-vote | terminé : poids précision ou accuracy, sur apprentissage ou validation |
-| — | (à venir) | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) | phase 2 |
-| M4 | (à venir) | Modèle profond, d'abord un MLP pour le tabulaire. Jamais modifié par la chaîne. | phase 3 |
-| M5 | (à venir) | Verdict sur ŷ(x) : confirmée, contestée ou inconnue, puis un score | phase 3 |
-| M6 | (à venir) | Explication : facteurs qui soutiennent ŷ, facteurs qui s'y opposent | phase 3 |
-| M7 | `experiences/` | Évaluation : détection d'erreurs, courbes accuracy–rejet, comparaison au softmax | phase 3 |
+| M1 | `m1_binarisation/` | Données → contexte formel binaire | terminé : échelle nominale ou interordinale (numérique), binarisation catégorielle (« ? » sans attribut, attributs constants retirés) |
+| M2 | `m2_facteurs/` | I ≈ A ∘ B : GreCon, GreConD (puis éventuellement MDLGreConD) | terminé : GreCon, GreConD, `nb_max` pour l'énumération, comptage des choix sur égalité |
+| M3 | `m3_classifieurs/` | Facteur → règle « intention → classe » avec un poids ; vote all-votes / best-vote | terminé : poids précision, accuracy ou lift, all-votes ou best-vote, `regles_qui_votent` |
+| — | `m3_classifieurs/` | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) | premiers essais : stacking (`empilement.py`), bagging (`ensachage.py`) sur vote |
+| M4 | (à venir) | Modèle profond, d'abord un MLP pour le tabulaire. Jamais modifié par la chaîne. | à venir |
+| M5 | (à venir) | Verdict sur ŷ(x) : confirmée, contestée ou inconnue, puis un score | à venir |
+| M6 | (à venir) | Explication : facteurs qui soutiennent ŷ, facteurs qui s'y opposent | à venir |
+| M7 | `experiences/` | Évaluation : détection d'erreurs, courbes accuracy–rejet, comparaison au softmax | à venir |
 
 ## Phase en cours
 
-**Phase 1 terminée** (M1, M2, M3 sur Pima, comparés à des modèles classiques) : voir `JOURNAL.md`.
-**Phase 2 terminée** (échelle interordinale, poids lift, mushroom) : voir `JOURNAL.md`.
-**Phase 3 (légère) : premières méthodes d'ensemble sur les facteurs** (stacking, bagging) sur congressional voting.
-Instructions : `docs/instructions_phase3_ensembles.md` (jeu de données : voir `DECISIONS.md`). Le test reste scellé.
+**Phase 1 terminée ; phase 2 terminée pour les étapes 10 à 14 (H1 confirmée, H2 et H3 rejetées, H4 confirmée) ; phase 3 légère terminée (H5 et H6 rejetées, H7 confirmée). Reste : étape 15 (synthèse de la phase 2), après la présentation.**
+Détails : `JOURNAL.md`. Instructions : `docs/instructions_phase2.md` ; phase 3 : `docs/instructions_phase3_ensembles.md` (jeu de données : voir `DECISIONS.md`). Le test reste scellé sur tous les jeux.
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille
@@ -66,7 +64,15 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 - **Les règles d'égalité sont écrites et testées.** GreConD : premier attribut dans l'ordre des colonnes. GreCon : plus grande extension, puis intention première dans l'ordre lexicographique. Classe d'un facteur à égalité : facteur écarté.
 - **Données figées.** Pima se lit uniquement depuis la copie figée `donnees/pima.csv`. Les zéros des colonnes de `COLONNES_ZERO_MANQUANT` sont des valeurs inconnues : sans attribut en M1 (option b). La densité du contexte est donc inférieure à 1/3 (0,298 sur l'apprentissage) ; 8/24 n'est atteint que sans traitement des zéros.
 - **Comparaison à information égale.** M3 se compare d'abord aux modèles entraînés sur les données binarisées. Les modèles bruts voient les zéros manquants comme des valeurs (voir `DECISIONS.md`) : la comparaison avec eux n'est pas à traitement égal.
+- **Hypothèses avant expériences.** Toute hypothèse et son critère sont commités dans `DECISIONS.md` avant la première expérience qui la teste, puis ne sont plus modifiés.
+- **Validation croisée figée par jeu.** Chaque jeu a son découpage 60/20/20 et ses 10 plis figés dans `donnees/decoupages/`. Dans chaque pli, tout est réappris sur sa partie d'apprentissage : binarisation, facteurs, poids, modèles.
+- **Données figées, au-delà de Pima :** `donnees/mushroom.csv` et `donnees/vote.csv`, lus uniquement depuis ces copies. Pour vote, « ? » = abstention réelle, sans attribut (limite connue).
 - **Graine fixe** : `random_state=42` partout.
+
+## Leçons de méthode
+
+- Un critère « au moins 8 plis sur 10 » doit tenir compte de la taille des plis (sur vote, un représentant ≈ 0,03 de F1) ; on donne aussi le test du signe, à titre descriptif. Les critères déjà figés ne sont pas modifiés.
+- Les critères de structure des facteurs se formulent en variables distinctes, pas en attributs (la fermeture interordinale ajoute les attributs impliqués, étape 12).
 
 ## Conventions de code
 
@@ -83,9 +89,11 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 
 ```bash
 pip install -r requirements.txt
-python -m pytest -q                  # tous les tests (environ 1 minute)
+python -m pytest -q                  # tous les tests (115, environ 1 minute)
 python -m pytest -q -p no:warnings   # idem, sans les avertissements de skmine (dépendance de fcapy)
 python -m experiences.<script>       # une expérience
+python -m experiences.cv_ensembles_vote   # phase 3 : stacking et bagging (environ 2 min)
+python -m experiences.synthese_vote       # phase 3 : tableau final et verdicts
 ```
 
 ## Fichiers de suivi
@@ -100,6 +108,9 @@ python -m experiences.<script>       # une expérience
 - T. Makhalova, M. Trnecka, « A Study of Boolean Matrix Factorization Under Supervised Settings », ICFCA 2019 : facteurs → classifieurs, all-votes et best-vote.
 - PyBMF (https://github.com/PreferredAI/PyBMF), commit 03c9b43 : son GreConD s'écarte de l'article (facteur final perdu, mise à jour au milieu du parcours des attributs, voir JOURNAL étape 3). Il ne sert pas de référence numérique.
 - fcapy 0.1.4.5 : référence pour l'énumération des concepts, dans les tests uniquement.
+- L. Breiman, « Bagging predictors », *Machine Learning* 24(2), 1996.
+- D. H. Wolpert, « Stacked generalization », *Neural Networks* 5(2), 1992, p. 241-259.
+- Jeux mushroom et congressional voting (UCI), obtenus par OpenML (version 1).
 
 ## Ce fichier
 
