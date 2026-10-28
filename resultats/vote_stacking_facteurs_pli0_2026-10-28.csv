@@ -1,0 +1,11 @@
+facteur,sens,coefficient,taille_extension,proportion_republicains,intention
+F43,républicain (+),1.998,128,0.914,physician-fee-freeze=y
+F29,républicain (+),0.876,88,0.966,handicapped-infants=n ET adoption-of-the-budget-resolution=n ET physician-fee-freeze=y
+F30,républicain (+),0.814,25,0.8,el-salvador-aid=y ET anti-satellite-test-ban=y ET mx-missile=n
+F41,républicain (+),0.591,28,0.429,mx-missile=n ET superfund-right-to-sue=n
+F11,républicain (+),0.504,88,0.92,physician-fee-freeze=y ET el-salvador-aid=y ET superfund-right-to-sue=y ET crime=y ET duty-free-exports=n
+F45,démocrate (−),-1.548,142,0.0,adoption-of-the-budget-resolution=y ET physician-fee-freeze=n ET aid-to-nicaraguan-contras=y
+F54,démocrate (−),-1.004,24,0.042,physician-fee-freeze=n ET aid-to-nicaraguan-contras=n
+F64,démocrate (−),-0.904,105,0.124,synfuels-corporation-cutback=y
+F35,démocrate (−),-0.79,53,0.113,immigration=n ET synfuels-corporation-cutback=y
+F20,démocrate (−),-0.789,152,0.658,religious-groups-in-schools=y ET crime=y

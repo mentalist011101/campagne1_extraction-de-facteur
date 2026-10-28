@@ -1,0 +1,13 @@
+section,methode,accuracy_moyenne,accuracy_ecart_type,f1_macro_moyen,f1_macro_ecart_type,predits_classe_1_moyen,reels_classe_1_moyen,hypothese,comparaison,victoires,defaites,egalites,p_valeur_signe,ecart_moyen_f1,verdict,meilleure_reference,f1_meilleure_reference,seuil
+tableau final,majoritaire,0.6121008403361344,0.013364603305717527,0.37965311004784685,0.005133211896921668,0.0,13.5,,,,,,,,,,,
+tableau final,M3 best-vote precision,0.9279831932773108,0.045633424530293364,0.9229702803656291,0.048855590802341864,12.4,13.5,,,,,,,,,,,
+tableau final,M3 best-vote precision + bagging (B=25),0.9396638655462185,0.04555727691938764,0.9355244322106401,0.049016625535007546,12.8,13.5,,,,,,,,,,,
+tableau final,stacking,0.956890756302521,0.024342526410877675,0.9547816136294435,0.02504289735357796,13.6,13.5,,,,,,,,,,,
+tableau final,regression_logistique,0.9569747899159664,0.02767246157430241,0.9549422776749628,0.02873652089875615,13.6,13.5,,,,,,,,,,,
+tableau final,foret_aleatoire,0.9569747899159664,0.033594298935451294,0.9551697774491015,0.03484292431176366,13.8,13.5,,,,,,,,,,,
+tableau final,naive_bayes_bernoulli,0.8936974789915967,0.05392902564028798,0.8892405442431015,0.0547995608331929,14.4,13.5,,,,,,,,,,,
+comparaison pli par pli,,,,,,,,H5,bagging contre M3 seul,6.0,2.0,2.0,0.2891,0.0126,rejetée,,,
+comparaison pli par pli,,,,,,,,H6,stacking contre M3 seul,7.0,2.0,1.0,0.1797,0.0318,rejetée,,,
+comparaison pli par pli,,,,,,,,D1,stacking contre régression logistique (descriptif),3.0,3.0,4.0,1.0,-0.0002,,,,
+non-infériorité,stacking,,,0.9548,,,,H7,,,,,,,confirmée,foret_aleatoire,0.9552,0.9352
+non-infériorité,M3 best-vote precision + bagging (B=25),,,0.9355,,,,H7,,,,,,,confirmée,foret_aleatoire,0.9552,0.9352
