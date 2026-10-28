@@ -75,3 +75,30 @@ def binariser(
 				f"{colonne}>{haut:.4g}",
 			]
 	return np.column_stack(colonnes_binaires), noms_attributs
+
+
+def apprendre_modalites(X_apprentissage: pd.DataFrame) -> dict[str, list[str]]:
+	"""Valeurs de chaque variable catégorielle, apprises sur l'apprentissage seul.
+
+	« ? » (valeur manquante) n'est pas une modalité. Une valeur présente chez tous les
+	objets donnerait un attribut constant : elle est retirée (voir DECISIONS.md, étape 14).
+	"""
+	modalites = {}
+	for colonne in X_apprentissage.columns:
+		effectifs = X_apprentissage[colonne][X_apprentissage[colonne] != "?"].value_counts()
+		modalites[colonne] = sorted(v for v, n in effectifs.items() if n < len(X_apprentissage))
+	return modalites
+
+
+def binariser_categoriel(X: pd.DataFrame, modalites: dict[str, list[str]]) -> tuple[np.ndarray, list[str]]:
+	"""Un attribut « variable=valeur » par modalité apprise.
+
+	« ? » et toute valeur absente de l'apprentissage ne reçoivent aucun attribut.
+	"""
+	colonnes_binaires = []
+	noms_attributs = []
+	for colonne, valeurs in modalites.items():
+		for valeur in valeurs:
+			colonnes_binaires.append((X[colonne] == valeur).to_numpy())
+			noms_attributs.append(f"{colonne}={valeur}")
+	return np.column_stack(colonnes_binaires), noms_attributs

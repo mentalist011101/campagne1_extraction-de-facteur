@@ -87,3 +87,16 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Indicateurs :** longueur moyenne d'intention (en attributs) et nombre moyen de variables distinctes de ces règles (décision de l'étape 12), avec les mêmes définitions.
 - **Références :** Naive Bayes de Bernoulli, régression logistique et forêt aléatoire sur chaque binarisation ; régression logistique et forêt aléatoire sur les données brutes standardisées ; hyperparamètres par défaut, `random_state=42`.
 - **Raison :** décisions de l'étudiant (plan de l'étape 13).
+
+## 2026-10-28 — Étape 14 : mushroom
+- **Source :** OpenML (`fetch_openml(name="mushroom", version=1)`), à défaut le fichier UCI `agaricus-lepiota.data` ; téléchargement unique, copie figée `donnees/mushroom.csv` (« ? » conservé tel quel). Vérifications : 8124 lignes, 22 variables + la classe, 4208 comestibles / 3916 vénéneux, 2480 « ? » toutes dans stalk-root ; tout écart est signalé, rien n'est corrigé.
+- **Classe :** 1 = vénéneux, 0 = comestible.
+- **Découpages :** 60/20/20 stratifié figé (`random_state=42`), test scellé ; 10 plis stratifiés (`random_state=42`) sur apprentissage + validation.
+- **Binarisation nominale :** un attribut par valeur de chaque variable, valeurs apprises sur la partie d'apprentissage du pli. « ? » ne reçoit aucun attribut (comme l'option b) ; une valeur absente de la partie d'apprentissage ne reçoit aucun attribut.
+- **Attributs constants (option a) :** un attribut présent chez tous les objets de la partie d'apprentissage du pli est retiré (appris sur l'apprentissage, donc sans fuite). Raison : il n'apporte aucune information et la fermeture l'ajouterait à chaque intention (cas de veil-type, à valeur unique), ce qui fausserait la part de facteurs à un seul attribut.
+- **Mesures :** GreConD seulement ; temps de GreConD mesuré par pli ; arrêt si un pli dépasse 30 minutes. H4 : accuracy moyenne sur les 10 plis, best-vote + précision, ≥ 0,90.
+
+## 2026-10-28 — Choix du jeu de la phase 3 (fixé avant l'étape 14)
+- **Règle :** mushroom avec B = 10 sacs si le meilleur M3 reste nettement sous 0,99 et si GreConD prend moins d'environ 30 s par pli ; sinon congressional voting (OpenML « vote » : votes y/n/?, « ? » sans attribut, codage nominal ; vérifier 435 lignes, 16 variables et la répartition des classes).
+- Sur un jeu catégoriel, une seule échelle : les mentions « pour chaque échelle » et la comparaison nominale / interordinale sont ignorées. H5, H6 et D1 restent identiques. Le « meilleur M3 » de référence est la meilleure configuration de M3 sur ce jeu, choisie AVANT de lancer la phase 3 et écrite dans ce fichier.
+- **Raison :** décisions de l'étudiant.

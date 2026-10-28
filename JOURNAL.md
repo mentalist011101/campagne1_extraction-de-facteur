@@ -103,3 +103,10 @@
 - **Structure des votants :** interordinale, all-votes : 2,48 attributs (1,70 variable) ; best-vote + précision : 2,82 attributs (1,85 variable) ; nominale ≈ 1,06 à 1,14. Aucun non-couvert, aucune égalité.
 - **Conclusion :** la piste Pima est close. Le meilleur M3 (0,715) est cohérent avec l'article (0,73).
 - **Question ouverte (après le 29 octobre) :** stacking = régression logistique sur la matrice A des facteurs, comparée à une régression logistique sur les attributs d'origine.
+
+## 2026-10-28 — Étape 14 : mushroom (H4)
+- **Fait :** `donnees/mushroom.py` (téléchargement unique depuis OpenML, copie figée `donnees/mushroom.csv`, découpage 60/20/20 et 10 plis figés, test scellé), `apprendre_modalites` / `binariser_categoriel` dans M1 (« ? » et valeurs absentes de l'apprentissage sans attribut, attributs constants retirés), script `experiences/cv_mushroom.py`, 8 tests dans `tests/test_mushroom.py`.
+- **Vérifications :** 8124 lignes, 22 variables + la classe, 4208 comestibles / 3916 vénéneux, 2480 « ? » toutes dans stalk-root : conforme. veil-type à valeur unique, retiré (115 attributs par pli).
+- **Résultats (10 plis, 649 ou 650 champignons évalués dont 313,3 vénéneux) :** **H4 confirmée** : best-vote + précision 0,998 ± 0,002 (F1 0,998 ; article 0,99). all-votes + précision 0,897 (article 0,93) ; best-vote + lift 0,971 ; best-vote + accuracy 0,921 ; règle majoritaire 0,518. Aucun non-couvert, aucune égalité. 118 à 123 facteurs par pli, 1,7 à 4,2 % à un seul attribut, longueur moyenne ≈ 8,4 ; GreConD 8,5 à 20,6 s par pli.
+- **Références sur les mêmes 115 attributs :** régression logistique 1,000 ± 0,000, forêt aléatoire 1,000 ± 0,000, Naive Bayes de Bernoulli 0,941 (F1 0,940). Sur mushroom, M3 (0,998) est à 0,002 de la régression logistique et de la forêt aléatoire (1,000), et bat le Naive Bayes (0,940). Observation faite après coup (H7 n'existait pas encore) : M3 serait non inférieur avec une marge de 0,02.
+- **Conséquence (règle de DECISIONS.md) :** le meilleur M3 n'est pas nettement sous 0,99 : la phase 3 se fera sur congressional voting.
