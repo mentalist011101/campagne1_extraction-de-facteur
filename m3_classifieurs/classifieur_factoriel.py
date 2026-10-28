@@ -50,8 +50,9 @@ def construire_regles(
 ) -> tuple[list[Regle], dict[int, str]]:
 	"""Règles des k premiers facteurs, et facteurs écartés {numéro : raison}.
 
-	Classe : majorité de l'extension sur l'apprentissage. Poids : précision ou
-	accuracy mesurée sur (I_poids, y_poids), l'apprentissage ou la validation.
+	Classe : majorité de l'extension sur l'apprentissage. Poids : précision, accuracy
+	ou lift mesurés sur (I_poids, y_poids), l'apprentissage ou la validation.
+	lift = précision / P(c), avec P(c) la proportion de c dans y_apprentissage.
 	"""
 	y_apprentissage = np.asarray(y_apprentissage)
 	y_poids = np.asarray(y_poids)
@@ -68,6 +69,8 @@ def construire_regles(
 			continue
 		if mesure == "precision":
 			poids = _precision(couverts, y_poids, classe)
+		elif mesure == "lift":
+			poids = _precision(couverts, y_poids, classe) / float((y_apprentissage == classe).mean())
 		else:
 			poids = _accuracy(couverts, y_poids, classe)
 		regles.append(Regle(numero, facteur.intention, classe, poids))
@@ -104,6 +107,24 @@ def predire(
 		classe = classe_par_defaut if egalite else gagnantes[0]
 		predictions.append(PredictionFactorielle(classe, scores, couvrantes, False, egalite))
 	return predictions
+
+
+def regles_qui_votent(prediction: PredictionFactorielle, vote: str) -> list[Regle]:
+	"""Règles qui votent effectivement pour x (voir DECISIONS.md, étape 13).
+
+	all-votes : toutes les règles couvrantes. best-vote : la seule règle décisive, de poids
+	maximal parmi celles de la classe prédite (la première dans l'ordre des facteurs à égalité).
+	Aucune règle pour un x non couvert, ni pour une égalité de scores en best-vote.
+	"""
+	if prediction.non_couvert:
+		return []
+	if vote == "all-votes":
+		return list(prediction.regles_couvrantes)
+	if prediction.egalite:
+		return []
+	de_la_classe = [r for r in prediction.regles_couvrantes if r.classe == prediction.classe]
+	# max garde le premier élément en cas d'égalité de poids
+	return [max(de_la_classe, key=lambda r: r.poids)]
 
 
 def compter(predictions: list[PredictionFactorielle]) -> dict:

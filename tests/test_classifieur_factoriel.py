@@ -14,6 +14,7 @@ from m3_classifieurs.classifieur_factoriel import (
 	construire_regles,
 	decrire_facteurs,
 	predire,
+	regles_qui_votent,
 )
 
 
@@ -177,3 +178,46 @@ def test_decrire_facteurs(exemple):
 	assert f3["precision_validation"] == pytest.approx(2 / 3)
 	assert not f3["ecarte"]
 	assert f4["ecarte"] and f4["raison"] == RAISON_NON_COUVERT
+
+
+# --- Étape 13 : lift et règles qui votent effectivement ---
+
+def test_f3_normal_lift_15(exemple):
+	# Précision 0,75 ; P(N) = 5/10 → lift 1,5
+	I, objets, attributs, classes, facteurs = exemple
+	regles, ecartes = construire_regles(facteurs, classes, I, classes, mesure="lift")
+	assert regle_par_numero(regles, 3).poids == pytest.approx(1.5)
+
+
+def test_lift_egal_precision_sur_proportion_de_classe(exemple):
+	I, objets, attributs, classes, facteurs = exemple
+	precisions, _ = construire_regles(facteurs, classes, I, classes, mesure="precision")
+	lifts, _ = construire_regles(facteurs, classes, I, classes, mesure="lift")
+	for p, l in zip(precisions, lifts):
+		assert l.classe == p.classe
+		assert l.poids == pytest.approx(p.poids / np.mean(np.asarray(classes) == p.classe))
+
+
+def test_regles_qui_votent_all_votes_toutes_les_couvrantes():
+	regles = [regle(1, [1, 0, 0], "A", 0.6), regle(2, [0, 1, 0], "B", 0.9), regle(3, [0, 0, 1], "A", 0.5)]
+	x = np.array([[1, 1, 1]], dtype=bool)
+	prediction = predire(regles, x, ["A", "B"], "A", vote="all-votes")[0]
+	assert [r.numero_facteur for r in regles_qui_votent(prediction, "all-votes")] == [1, 2, 3]
+
+
+def test_regles_qui_votent_best_vote_la_regle_decisive():
+	regles = [regle(1, [1, 0, 0], "A", 0.6), regle(2, [0, 1, 0], "B", 0.9), regle(3, [0, 0, 1], "B", 0.9)]
+	x = np.array([[1, 1, 1]], dtype=bool)
+	prediction = predire(regles, x, ["A", "B"], "A", vote="best-vote")[0]
+	assert prediction.classe == "B"
+	# Règles 2 et 3 au même poids maximal : la première dans l'ordre des facteurs
+	assert [r.numero_facteur for r in regles_qui_votent(prediction, "best-vote")] == [2]
+
+
+def test_regles_qui_votent_vide_si_non_couvert_ou_egalite():
+	regles = [regle(1, [1, 0], "A", 0.5), regle(2, [0, 1], "B", 0.5)]
+	non_couvert = predire(regles, np.array([[0, 0]], dtype=bool), ["A", "B"], "A", vote="best-vote")[0]
+	egalite = predire(regles, np.array([[1, 1]], dtype=bool), ["A", "B"], "A", vote="best-vote")[0]
+	assert regles_qui_votent(non_couvert, "best-vote") == []
+	assert regles_qui_votent(egalite, "best-vote") == []
+	assert regles_qui_votent(non_couvert, "all-votes") == []

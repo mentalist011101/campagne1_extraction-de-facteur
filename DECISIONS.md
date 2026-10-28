@@ -80,3 +80,10 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Choix :** paramètre `echelle` (`"nominale"` par défaut, ou `"interordinale"`) dans `binariser`, `contextes_pima` et `contextes_pli`. Mêmes seuils (terciles appris sur l'apprentissage, ou sur la partie d'apprentissage du pli). Quatre attributs par variable, dans l'ordre `v<=t1`, `v<=t2`, `v>t1`, `v>t2` ; valeur manquante (option b) : aucun des quatre.
 - **Source d'arbitraire connue :** cet ordre des colonnes fixe le choix de GreConD en cas d'égalité (premier attribut dans l'ordre des colonnes). À l'étape 12, le nombre de choix de GreConD faits sur une égalité sera compté grâce à la trace.
 - **Raison :** instructions de la phase 2 ; ordre conservé tel quel, sans optimisation.
+
+## 2026-10-24 — Étape 13 : poids lift et « facteurs qui votent effectivement »
+- **Lift :** lift(f, c) = précision(f, c) / P(c), P(c) = proportion de c dans la partie d'apprentissage (du pli). Remplace la précision dans all-votes et best-vote, sans autre changement.
+- **Facteurs qui votent effectivement :** all-votes : toutes les règles qui couvrent x ; best-vote : la seule règle décisive (celle qui donne le score maximal de la classe prédite). Moyenne sur les couples (x, règle). Si plusieurs règles de la classe prédite ont le même poids maximal, la règle décisive est la première dans l'ordre des facteurs. Un x non couvert ou à égalité de scores n'a aucune règle décisive et n'entre pas dans la moyenne.
+- **Indicateurs :** longueur moyenne d'intention (en attributs) et nombre moyen de variables distinctes de ces règles (décision de l'étape 12), avec les mêmes définitions.
+- **Références :** Naive Bayes de Bernoulli, régression logistique et forêt aléatoire sur chaque binarisation ; régression logistique et forêt aléatoire sur les données brutes standardisées ; hyperparamètres par défaut, `random_state=42`.
+- **Raison :** décisions de l'étudiant (plan de l'étape 13).

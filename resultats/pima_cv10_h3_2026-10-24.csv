@@ -1,0 +1,5 @@
+,ecart_precision,ecart_lift,critere_i,accuracy_lift,accuracy_majoritaire,critere_ii,les_deux
+nominale all-votes,16.7,9.0,True,0.6873611845584346,0.6498677948175567,True,True
+nominale best-vote,20.1,20.5,False,0.61737176097303,0.6498677948175567,False,False
+interordinale all-votes,18.4,12.3,True,0.7149656266525648,0.6498677948175567,True,True
+interordinale best-vote,18.3,22.9,False,0.5849286092014807,0.6498677948175567,False,False
