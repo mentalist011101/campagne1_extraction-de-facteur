@@ -32,6 +32,7 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 
 **Phase 1 terminée ; phase 2 terminée pour les étapes 10 à 14 (H1 confirmée, H2 et H3 rejetées, H4 confirmée) ; phase 3 légère terminée (H5 et H6 rejetées, H7 confirmée). Reste : étape 15 (synthèse de la phase 2), après la présentation.**
 Détails : `JOURNAL.md`. Instructions : `docs/instructions_phase2.md` ; phase 3 : `docs/instructions_phase3_ensembles.md` (jeu de données : voir `DECISIONS.md`). Le test reste scellé sur tous les jeux.
+**Campagne 1 en cours** (méthodes d'ensemble sur 19 jeux, H8 à H10) : `docs/instructions_campagne1.md`. Pas de test scellé dans cette campagne : validation croisée à 10 plis sur le jeu entier, sans réglage (voir `DECISIONS.md`).
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille
@@ -45,7 +46,11 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 4. Exécuter et montrer la sortie réelle, pas un résumé.
 5. Expliquer le lien entre le code et l'algorithme.
 6. Attendre « validé ».
-7. Faire un commit git, puis ajouter une entrée dans `JOURNAL.md`.
+7. Proposer un message de commit (l'étudiant commite), puis ajouter une entrée dans `JOURNAL.md`.
+
+**Git : tu ne fais jamais de commit, de push ni de pull request.** Quand une étape est validée, tu me proposes un message de commit, et c'est moi qui commite et qui pousse. N'ajoute jamais de ligne `Co-Authored-By` ni aucune autre mention de toi dans les messages de commit, les fichiers ou le dépôt.
+
+**Dépôt GitHub et Kaggle.** Le projet est poussé sur GitHub par moi. Les calculs longs tournent sur Kaggle, qui clone le dépôt. Aucun secret (jeton, mot de passe) n'est écrit dans le code ou dans un notebook : si le dépôt est privé, le jeton passe par les *Kaggle Secrets*.
 
 **Règles :**
 - Jamais d'étape suivante sans validation.
