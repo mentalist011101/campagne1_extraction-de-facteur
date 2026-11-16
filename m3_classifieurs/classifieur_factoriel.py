@@ -84,7 +84,11 @@ def predire(
 	classe_par_defaut,
 	vote: str = "all-votes",
 ) -> list[PredictionFactorielle]:
-	"""Prédiction de chaque ligne de I par all-votes (somme des poids) ou best-vote (maximum)."""
+	"""Prédiction de chaque ligne de I par all-votes (somme des poids) ou best-vote (maximum).
+
+	Égalité de scores : classe_par_defaut si elle est parmi les gagnantes, sinon la première
+	des gagnantes dans l'ordre de classes (DECISIONS.md, campagne 1, étape 3).
+	"""
 	predictions = []
 	for x in I:
 		couvrantes = [r for r in regles if x[r.intention].all()]
@@ -104,9 +108,22 @@ def predire(
 		meilleur_score = max(scores.values())
 		gagnantes = [c for c in classes if scores[c] == meilleur_score]
 		egalite = len(gagnantes) > 1
-		classe = classe_par_defaut if egalite else gagnantes[0]
+		classe = departager(gagnantes, classe_par_defaut)
 		predictions.append(PredictionFactorielle(classe, scores, couvrantes, False, egalite))
 	return predictions
+
+
+def classes_par_frequence(y) -> list:
+	"""Classes triées par effectif décroissant, puis par libellé : ordre de départage des égalités."""
+	valeurs, effectifs = np.unique(np.asarray(y), return_counts=True)
+	return [valeurs.tolist()[i] for i in sorted(range(len(valeurs)), key=lambda i: -effectifs[i])]
+
+
+def departager(gagnantes: list, classe_par_defaut):
+	"""Classe retenue parmi les gagnantes (dans l'ordre de classes) : règle d'égalité commune à M3 et au bagging."""
+	if len(gagnantes) == 1:
+		return gagnantes[0]
+	return classe_par_defaut if classe_par_defaut in gagnantes else gagnantes[0]
 
 
 def regles_qui_votent(prediction: PredictionFactorielle, vote: str) -> list[Regle]:

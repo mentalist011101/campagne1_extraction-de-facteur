@@ -1,0 +1,14 @@
+# T. Makhalova, M. Trnecka, « A Study of Boolean Matrix Factorization Under Supervised Settings », ICFCA 2019, LNAI 11511, p. 341-348.
+# Table 1, p. 4 de l'article (p. 344 des actes). Valeurs recopiées du PDF par l'étudiant, 2026-11-16. Ordre des classes : celui de l'article.
+jeu,jeu_catalogue,objets,attributs_binaires,densite,repartition_classes,remarque
+anneal,anneal,898,66,0.20,0.76/0.04/0.11/0.07/0.01,
+breast,breast-w,699,14,0.64,0.34/0.66,
+hepatitis,hepatitis,155,50,0.36,0.79/0.21,
+horse colic,colic,368,81,0.21,0.63/0.37,
+iris,iris,150,16,0.25,0.33/0.33/0.33,
+led7,led7,3200,14,0.50,0.11/0.09/0.10 (x8 classes),telle quelle dans l'article
+mushroom,mushroom,8124,88,0.25,0.52/0.48,
+nursery,nursery,1000,27,0.30,0.32/0.34/0.34,
+page block,page-blocks,5473,39,0.26,0.90/0.02/0.01/0.05/0.02,
+pima,pima,768,36,0.22,0.650/0.35,
+wine,wine,178,65,0.20,0.33/0.40/0.27,

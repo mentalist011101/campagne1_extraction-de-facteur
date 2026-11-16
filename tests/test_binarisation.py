@@ -175,3 +175,74 @@ def test_seuils_strictement_croissants_apprentissage_et_plis():
 			if not t1 < t2:
 				egalites.append((variable, nom_partie, t1, t2))
 	assert not egalites, f"Seuils non strictement croissants : {egalites}"
+
+
+# --- Campagne 1, étape 3 : binarisation mixte (DECISIONS.md, 2026-11-16) ---
+
+from m1_binarisation.binarisation import apprendre_binarisation, binariser_jeu
+
+
+def test_campagne_numerique_a_au_plus_5_valeurs_devient_categorielle():
+	X = pd.DataFrame({"v": [1.0, 2.0, 3.0, 1.0, 2.0, 3.0]})
+	binarisation = apprendre_binarisation(X, {"v": "numerique"})
+	assert binarisation.noms == ["v=1.0", "v=2.0", "v=3.0"]
+	assert binariser_jeu(X, binarisation)[:3].tolist() == [
+		[True, False, False], [False, True, False], [False, False, True],
+	]
+
+
+def test_campagne_numerique_a_7_valeurs_donne_4_attributs_interordinaux():
+	X = pd.DataFrame({"v": [0.0, 1, 2, 3, 4, 5, 6]})
+	binarisation = apprendre_binarisation(X, {"v": "numerique"})
+	assert binarisation.noms == ["v<=2", "v<=4", "v>2", "v>4"]
+	assert (binarisation.nb_constants, binarisation.nb_fusions) == (0, 0)
+
+
+def test_campagne_t1_egal_t2_donne_2_attributs_et_non_4():
+	# 20 valeurs dont 14 zéros : quantiles 1/3 et 2/3 nuls, t1 = t2 = 0
+	X = pd.DataFrame({"v": [0.0] * 14 + [1, 2, 3, 4, 5, 6]})
+	binarisation = apprendre_binarisation(X, {"v": "numerique"})
+	assert binarisation.seuils["v"] == (0.0, 0.0)
+	assert binarisation.noms == ["v<=0", "v>0"]
+	assert binarisation.nb_fusions == 2
+	assert binariser_jeu(X, binarisation).shape == (20, 2)
+
+
+def test_campagne_doublon_entre_deux_variables_fusionne_premier_garde():
+	X = pd.DataFrame({"a": ["x", "y", "x"], "b": ["u", "w", "u"]})
+	binarisation = apprendre_binarisation(X, {"a": "categorielle", "b": "categorielle"})
+	# a=x ≡ b=u et a=y ≡ b=w sur l'apprentissage
+	assert binarisation.noms == ["a=x", "a=y"]
+	assert binarisation.nb_fusions == 2
+
+
+def test_campagne_attributs_constants_retires():
+	# Quantiles : 1/3 → 4,667 ; 2/3 → 6 = maximum, donc v<=6 toujours vrai et v>6 toujours faux
+	X = pd.DataFrame({"v": [1.0, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6]})
+	binarisation = apprendre_binarisation(X, {"v": "numerique"})
+	assert binarisation.noms == ["v<=4.667", "v>4.667"]
+	assert binarisation.nb_constants == 2
+
+
+def test_campagne_valeur_manquante_sans_attribut():
+	X = pd.DataFrame({
+		"v": [0.0, 1, 2, 3, 4, 5, 6, np.nan],
+		"c": ["a", "b", "a", np.nan, "b", "a", "b", "a"],
+	})
+	binarisation = apprendre_binarisation(X, {"v": "numerique", "c": "categorielle"})
+	assert binarisation.seuils["v"] == (2.0, 4.0)
+	assert binarisation.noms == ["v<=2", "v<=4", "v>2", "v>4", "c=a", "c=b"]
+	I = binariser_jeu(X, binarisation)
+	assert not I[7, :4].any()
+	assert not I[3, 4:].any()
+
+
+def test_campagne_seuils_et_modalites_de_l_apprentissage_appliques_tels_quels():
+	X_app = pd.DataFrame({"v": [0.0, 1, 2, 3, 4, 5, 6], "c": ["a", "b", "a", "b", "a", "b", "a"]})
+	binarisation = apprendre_binarisation(X_app, {"v": "numerique", "c": "categorielle"})
+	X_nouveau = pd.DataFrame({"v": [10.0, -1.0], "c": ["z", "b"]})
+	I = binariser_jeu(X_nouveau, binarisation)
+	assert I.tolist() == [
+		[False, False, True, True, False, False],   # v = 10 ; « z » absente de l'apprentissage
+		[True, True, False, False, False, True],    # v = -1 ; c = b
+	]

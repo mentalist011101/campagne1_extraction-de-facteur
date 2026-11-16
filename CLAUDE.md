@@ -96,6 +96,7 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 pip install -r requirements.txt
 python -m pytest -q                  # tous les tests (115, environ 1 minute)
 python -m pytest -q -p no:warnings   # idem, sans les avertissements de skmine (dépendance de fcapy)
+python -m pytest -q -m lent           # tests du catalogue de la campagne 1 (44, environ 30 s)
 python -m experiences.<script>       # une expérience
 python -m experiences.cv_ensembles_vote   # phase 3 : stacking et bagging (environ 2 min)
 python -m experiences.synthese_vote       # phase 3 : tableau final et verdicts

@@ -42,3 +42,19 @@ def test_empiler_dimensions():
 	y_pred, modele = empiler(facteurs, I, y, I[:4])
 	assert y_pred.shape == (4,)
 	assert modele.coef_.shape == (1, len(facteurs))
+
+
+def test_empiler_trois_classes_regression_multinomiale():
+	rng = np.random.default_rng(0)
+	I = rng.random((30, 6)) < 0.5
+	y = np.array(["A", "B", "C"] * 10)
+	facteurs = grecond(I).facteurs
+	y_pred, modele = empiler(facteurs, I, y, I)
+	assert modele.coef_.shape == (3, len(facteurs))
+	assert set(y_pred) <= {"A", "B", "C"}
+	# Multinomiale : probabilités = softmax des scores (en un-contre-tous, elles seraient normalisées autrement)
+	A = matrice_facteurs(I, facteurs)
+	scores = modele.decision_function(A)
+	softmax = np.exp(scores - scores.max(axis=1, keepdims=True))
+	softmax /= softmax.sum(axis=1, keepdims=True)
+	assert np.allclose(modele.predict_proba(A), softmax)

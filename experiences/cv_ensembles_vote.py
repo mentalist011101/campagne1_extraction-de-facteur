@@ -64,12 +64,12 @@ def main() -> None:
 		if numero_pli == 0:
 			_afficher_facteurs_du_stacking(modele_stacking, facteurs, noms, y_app.to_numpy())
 
-		bagging = bagging_m3(I_app, y_app, I_eval, classe_majoritaire, nb_sacs=nb_sacs)
+		bagging = bagging_m3(I_app, y_app, I_eval, CLASSES, classe_majoritaire, nb_sacs=nb_sacs)
 		lignes.append({**commun, "methode": f"M3 best-vote precision + bagging (B={nb_sacs})",
 			**metriques(y_eval, bagging.predictions)})
 		proportions.append(pd.DataFrame({
 			"pli": numero_pli, "indice": indices_eval, "classe_reelle": y_eval.to_numpy(),
-			"prediction_bagging": bagging.predictions, "proportion_sacs_classe_1": bagging.proportion_classe_1,
+			"prediction_bagging": bagging.predictions, "proportion_sacs_classe_1": bagging.proportions[:, 1],
 		}))
 		non_couverts += [{"pli": numero_pli, "sac": b, "non_couverts": n, "temps_s": round(s, 2)}
 			for b, (n, s) in enumerate(zip(bagging.non_couverts_par_sac, bagging.temps_par_sac))]
@@ -110,7 +110,7 @@ def _choisir_nb_sacs(X, y, plis) -> int:
 	modalites = apprendre_modalites(X.iloc[indices_app])
 	I_app, _ = binariser_categoriel(X.iloc[indices_app], modalites)
 	I_eval, _ = binariser_categoriel(X.iloc[indices_eval], modalites)
-	essai = bagging_m3(I_app, y.iloc[indices_app], I_eval, int(y.iloc[indices_app].mode()[0]), nb_sacs=1)
+	essai = bagging_m3(I_app, y.iloc[indices_app], I_eval, CLASSES, int(y.iloc[indices_app].mode()[0]), nb_sacs=1)
 	prevu = essai.temps_par_sac[0] * NB_SACS_PREVU * len(plis)
 	nb_sacs = NB_SACS_PREVU if prevu <= DUREE_MAX_TOTALE_S else NB_SACS_REDUIT
 	print(f"Un sac : {essai.temps_par_sac[0]:.2f} s ; total prévu pour B = {NB_SACS_PREVU} : "

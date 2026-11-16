@@ -123,3 +123,36 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Tirage :** sac b = `np.random.default_rng(42 + b).integers(0, n_app, n_app)`, avec remise ; configuration best-vote + précision (M3 de référence) ; agrégation par vote majoritaire, égalité → classe majoritaire du pli (impossible avec B = 25 impair).
 - **Étape 18 :** pour H5 et H6, à titre descriptif, victoires, défaites, égalités et p-valeur bilatérale du test du signe (égalités exclues).
 - **Raison :** décisions de l'étudiant (plan de l'étape 17).
+
+## 2026-11-16 — Campagne 1, étape 2 : jeux de données
+- **Jeux exclus (règle fixée avant tout résultat : moins de 100 objets) :** contact-lenses (24 objets), weather numeric et weather symbolic (14), labor (57), lupus (87) ; iris-2D, doublon d'iris.
+- **Copies existantes :** le catalogue pointe vers les copies figées de Pima (`donnees/pima.csv`, miroir GitHub UCI de J. Brownlee), mushroom (`donnees/mushroom.csv`) et vote (`donnees/vote.csv`), sans nouveau téléchargement. Les 16 autres jeux sont figés dans `donnees/brutes/`.
+- **Zéros de Pima :** toujours traités comme manquants (`COLONNES_ZERO_MANQUANT`) : exception déclarée, propre à ce jeu.
+- **Horse colic :** version retenue = celle dont la classe correspond à la Table 1 de Makhalova & Trnecka (2 classes, 0,63 / 0,37 : `surgical_lesion`). Les versions 1 (OpenML 25) et 2 (OpenML 27) ont toutes deux cette classe (232 / 136) ; la version 2 est retenue, parce que la version 1 contient `site_of_lesion`, `type_of_lesion` et `subtype_of_lesion`, qui décrivent la lésion elle-même (fuite vers la classe). Choix de Claude, à confirmer par l'étudiant.
+- **Répartition des classes :** notée dans le catalogue pour chaque jeu, et comparée à la Table 1 de Makhalova & Trnecka pour anneal, breast, hepatitis, horse colic, iris, mushroom, nursery, page blocks, pima et wine. Les écarts sont signalés, rien n'est corrigé (nursery : 3 classes dans l'article, 5 dans le jeu complet).
+- **Colonnes retirées au chargement, jamais dans la copie figée.** Règle : « identifiant ou marqueur de découpage ». Retirées : le nom de l'animal (zoo), Train_or_Test et Speaker_Number (vowel). Sex (vowel) est gardé. Toute autre colonne qui relèverait de cette règle est signalée.
+- **Classes rares :** toutes les classes sont gardées. Le F1 macro est calculé sur les classes présentes dans le pli évalué ou dans les prédictions (comportement par défaut de sklearn). Le catalogue liste, pour chaque jeu, les classes de moins de 10 objets.
+- **Raison :** décisions de l'étudiant du 2026-11-16 (plan de l'étape 2).
+
+## 2026-11-16 — Campagne 1, étape 2 : décisions complémentaires (fixées avant tout résultat)
+- **Horse colic :** version 2 (OpenML 27) confirmée. Vérifié : cible `surgical_lesion`, 232 « yes » / 136 « no » (0,630 / 0,370), conforme à la Table 1 (0,63 / 0,37).
+- **Règle des colonnes retirées, élargie :** identifiant, marqueur de découpage, ou variable observée après la cible (fuite de cible). Retirées au chargement, jamais dans la copie figée : `animal` (zoo, identifiant), `Speaker_Number` (vowel, identifiant ; `Train_or_Test`, marqueur de découpage, est absente de la version 2 d'OpenML), `outcome` (colic, observée après la cible). Rien d'autre n'est retiré sans accord de l'étudiant.
+- **Numériques à peu de valeurs :** une variable numérique qui a au plus 5 valeurs distinctes sur la partie d'apprentissage du pli est traitée comme catégorielle (un attribut par valeur). Le catalogue liste, à titre indicatif, celles qui ont au plus 5 valeurs sur le jeu entier.
+- **Licence :** la valeur d'OpenML est gardée (« Public »). Les instructions disaient CC BY 4.0 à tort.
+- **Table 1 de Makhalova & Trnecka :** recopiée par l'étudiant dans `donnees/table1_makhalova_trnecka.csv` (référence en en-tête ; le PDF n'est pas commité). Comparaison dans le catalogue : objets, nombre de classes, répartition triée. Tolérance d'arrondi : 0,005, puisque la Table 1 arrondit à 2 décimales (choix de Claude). Les écarts sont signalés, rien n'est corrigé.
+- **Tests du catalogue :** marqués `lent` (`pytest.ini`), exclus de la suite courante ; à lancer avec `python -m pytest -q -m lent`.
+- **Raison :** décisions de l'étudiant du 2026-11-16.
+
+## 2026-11-16 — Campagne 1, étape 2 : décisions après le catalogue
+- **colic, `surgery` gardée :** la cible `surgical_lesion` est établie rétrospectivement (après opération ou autopsie) ; la décision d'opérer la précède, la règle « observée après la cible » ne s'applique pas. **Limite :** la variable reflète le jugement du vétérinaire sur la même question.
+- **page-blocks :** écart max de 0,01 avec la Table 1 sur les répartitions triées, même nombre d'objets. Écart mineur (arrondi ou coquille probable), aucune action.
+- **led7 :** non comparé, faute d'une répartition lisible dans l'article.
+- **« Au plus 5 valeurs → catégorielle » appliquée sans exception.** **Limite :** l'ordre des valeurs est perdu (balance-scale entièrement catégoriel, slope, number_of_major_vessels…). La classe de balance-scale dépend d'un produit poids × distance, que ni les terciles ni les catégories ne représentent bien : résultat à ne pas sur-interpréter.
+- **Raison :** décisions de l'étudiant du 2026-11-16.
+
+## 2026-11-16 — Campagne 1, étape 3 : plusieurs classes et binarisation (fixées avant tout résultat)
+- **Égalité de vote (M3 et bagging) :** parmi les classes à égalité, la plus fréquente sur la partie d'apprentissage. `predire` et `agreger` prennent `classe_par_defaut` si elle est parmi les gagnantes, sinon la première des gagnantes dans l'ordre de `classes` ; la campagne passe `classes` triées par effectif décroissant sur l'apprentissage, puis par libellé (`classes_par_frequence`), et `classe_par_defaut` = la première, ce qui donne exactement la règle. Un x non couvert reçoit la classe majoritaire. À 2 classes, la règle coïncide avec la précédente (égalité → classe majoritaire) : les résultats des phases 1 à 3 ne changent pas. L'égalité reste comptée et rapportée à part.
+- **Binarisation de la campagne :** catégorielle → un attribut par valeur ; numérique à au plus 5 valeurs distinctes sur l'apprentissage → catégorielle ; autre numérique → échelle interordinale sur les terciles de l'apprentissage ; manquant → aucun attribut. Tout est appris sur la partie d'apprentissage du pli.
+- **Attributs constants** sur la partie d'apprentissage (toujours vrais ou toujours faux) : retirés.
+- **Attributs identiques** sur la partie d'apprentissage : fusionnés, on garde le premier dans l'ordre des colonnes. Couvre t1 = t2 (`v<=t1` ≡ `v<=t2`, `v>t1` ≡ `v>t2`) et tout autre doublon. Le nombre d'attributs retirés comme constants et celui des fusions sont rapportés par jeu et par pli. **Raisons :** Naive Bayes compterait deux fois la même information, et la longueur des intentions serait gonflée.
+- **Raison :** décisions de l'étudiant du 2026-11-16 (plan de l'étape 3).

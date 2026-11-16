@@ -39,3 +39,11 @@ def test_accuracy_decides_ignore_non_couverts_et_egalites():
 def test_accuracy_decides_sans_aucun_x_decide():
 	predictions = [prediction(0, non_couvert=True)]
 	assert math.isnan(accuracy_decides(np.array([0]), predictions))
+
+
+def test_f1_macro_sur_la_reunion_des_classes_reelles_et_predites():
+	# Classe 2 présente mais jamais prédite : F1 = 0 ; classe 0 : F1 = 1 ; classe 1 : précision 2/3, rappel 1 → 4/5
+	resultat = metriques(np.array([0, 0, 1, 1, 2]), np.array([0, 0, 1, 1, 1]))
+	assert resultat["f1_macro"] == pytest.approx((1 + 4 / 5 + 0) / 3)
+	# Une classe absente du pli évalué et des prédictions n'entre pas dans la moyenne
+	assert metriques(np.array([0, 0, 1]), np.array([0, 0, 1]))["f1_macro"] == pytest.approx(1.0)

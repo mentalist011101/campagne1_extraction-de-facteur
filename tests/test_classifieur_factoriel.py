@@ -221,3 +221,29 @@ def test_regles_qui_votent_vide_si_non_couvert_ou_egalite():
 	assert regles_qui_votent(non_couvert, "best-vote") == []
 	assert regles_qui_votent(egalite, "best-vote") == []
 	assert regles_qui_votent(non_couvert, "all-votes") == []
+
+
+# --- Campagne 1, étape 3 : plusieurs classes (DECISIONS.md, 2026-11-16) ---
+
+from m3_classifieurs.classifieur_factoriel import classes_par_frequence
+
+
+def test_classes_par_frequence_puis_par_libelle():
+	assert classes_par_frequence(np.array(["b", "a", "b", "c", "a"])) == ["a", "b", "c"]
+	assert classes_par_frequence(np.array(["c", "c", "a", "b", "c", "b"])) == ["c", "b", "a"]
+
+
+def test_egalite_a_trois_classes_la_plus_frequente_parmi_les_gagnantes():
+	regles = [regle(1, [1, 0, 0], "B", 0.5), regle(2, [0, 1, 0], "C", 0.5), regle(3, [0, 0, 1], "A", 0.2)]
+	x = np.array([[1, 1, 0]], dtype=bool)   # A : 0, B : 0,5, C : 0,5
+	for vote in ["all-votes", "best-vote"]:
+		prediction = predire(regles, x, ["A", "B", "C"], "A", vote=vote)[0]
+		assert prediction.egalite
+		assert prediction.classe == "B"
+		assert predire(regles, x, ["A", "C", "B"], "A", vote=vote)[0].classe == "C"
+
+
+def test_egalite_a_trois_classes_majoritaire_parmi_les_gagnantes():
+	regles = [regle(1, [1, 0, 0], "B", 0.5), regle(2, [0, 1, 0], "C", 0.2), regle(3, [0, 0, 1], "A", 0.5)]
+	x = np.array([[1, 1, 1]], dtype=bool)   # best-vote : A 0,5, B 0,5, C 0,2
+	assert predire(regles, x, ["A", "B", "C"], "A", vote="best-vote")[0].classe == "A"

@@ -133,3 +133,10 @@
 
 ## 2026-11-16 — Campagne 1, étape 1 : règles Git et Kaggle
 - **Fait :** dans `CLAUDE.md`, règle Git (Claude ne commite plus, ne pousse plus, aucune mention de Claude dans le dépôt), paragraphe GitHub et Kaggle (aucun secret dans le code ni dans un notebook), étape 7 du cycle reformulée en conséquence, campagne 1 ajoutée à « Phase en cours ». Instructions copiées dans `docs/instructions_campagne1.md`.
+
+## 2026-11-16 — Campagne 1, étape 2 : catalogue et copies figées des 19 jeux
+- **Fait :** `donnees/catalogue.py` (`figer_jeux` : téléchargement unique du CSV complet et des types depuis OpenML ; `charger_jeu` : lecture hors ligne, colonnes retirées au chargement, manquant = NaN ; `ecrire_catalogue`), `donnees/brutes/` (16 CSV, `variables.csv`, `sources.csv`), `donnees/catalogue.csv`, `donnees/table1_makhalova_trnecka.csv` (recopiée par l'étudiant), 44 tests marqués `lent` dans `tests/test_catalogue.py`, `pytest.ini`. Pima, mushroom et vote : copies existantes.
+- **Vérifications :** les 19 tailles correspondent aux instructions ; les 16 copies OpenML redonnent exactement les valeurs de `fetch_openml` (vérification hors dépôt) ; un second téléchargement donne les mêmes octets (SHA-256).
+- **Table 1 de Makhalova & Trnecka :** conforme à l'arrondi près pour anneal, breast-w, hepatitis, colic, iris, mushroom, pima, wine ; page-blocks : écart max 0,01 ; nursery : 12 960 objets et 5 classes contre 1 000 et 3 ; led7 non comparé.
+- **Signalés :** licence « Public » sur OpenML (pas CC BY 4.0) ; `Train_or_Test` absente de vowel v2 ; anneal : 22 175 valeurs manquantes, tous les objets touchés ; classes rares (anneal 1:8, nursery recommend:2, glass tableware:9, zoo insect:8, reptile:5, amphibian:4) ; numériques à au plus 5 valeurs : heart-statlog (8 variables), balance-scale (les 4).
+- **Colonnes retirées :** `animal` (zoo), `Speaker_Number` (vowel), `outcome` (colic). `surgery` (colic) gardée, avec sa limite.

@@ -6,10 +6,31 @@ Les seuils sont appris une fois, puis appliqués tels quels à tout nouvel x.
 
 Zéros manquants (voir DECISIONS.md) : pour les colonnes listées, un zéro signifie
 « valeur inconnue » ; il est exclu du calcul des seuils et ne reçoit aucun attribut.
+
+Campagne 1 (apprendre_binarisation, binariser_jeu) : variables numériques et catégorielles
+mêlées, attributs constants retirés et attributs identiques fusionnés sur l'apprentissage
+(voir DECISIONS.md, 2026-11-16).
 """
+
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
+
+MAX_VALEURS_CATEGORIELLE = 5
+
+
+@dataclass(frozen=True)
+class Binarisation:
+	"""Binarisation apprise sur la partie d'apprentissage d'un pli, appliquée telle quelle ensuite."""
+
+	seuils: dict[str, tuple[float, float]]
+	modalites: dict[str, list]
+	colonnes: list[str]
+	gardes: np.ndarray
+	noms: list[str]
+	nb_constants: int
+	nb_fusions: int
 
 
 def apprendre_seuils(
@@ -102,3 +123,53 @@ def binariser_categoriel(X: pd.DataFrame, modalites: dict[str, list[str]]) -> tu
 			colonnes_binaires.append((X[colonne] == valeur).to_numpy())
 			noms_attributs.append(f"{colonne}={valeur}")
 	return np.column_stack(colonnes_binaires), noms_attributs
+
+
+def apprendre_binarisation(X_app: pd.DataFrame, types: dict[str, str]) -> Binarisation:
+	"""Catégorielle ou numérique à au plus 5 valeurs : un attribut par valeur ; sinon interordinale.
+
+	Les attributs suivent l'ordre des colonnes de X_app (il décide des égalités de GreConD).
+	Puis, sur l'apprentissage : attributs constants retirés, attributs identiques fusionnés
+	(le premier dans l'ordre des colonnes est gardé). Manquant (NaN) : aucun attribut.
+	"""
+	seuils, modalites = {}, {}
+	for colonne in X_app.columns:
+		valeurs = X_app[colonne]
+		if types[colonne] == "numerique" and valeurs.nunique() > MAX_VALEURS_CATEGORIELLE:
+			seuils[colonne] = apprendre_seuils(X_app[[colonne]], colonnes_zero_manquant=[])[colonne]
+		else:
+			modalites[colonne] = apprendre_modalites(X_app[[colonne]])[colonne]
+	colonnes = list(X_app.columns)
+	I_complet, noms_complets = _binariser_complet(X_app, seuils, modalites, colonnes)
+
+	non_constants = I_complet.any(axis=0) & ~I_complet.all(axis=0)
+	gardes, deja_vues = [], set()
+	for j in np.flatnonzero(non_constants):
+		cle = I_complet[:, j].tobytes()
+		if cle not in deja_vues:
+			deja_vues.add(cle)
+			gardes.append(j)
+	return Binarisation(
+		seuils, modalites, colonnes, np.array(gardes, dtype=int), [noms_complets[j] for j in gardes],
+		nb_constants=int((~non_constants).sum()), nb_fusions=int(non_constants.sum()) - len(gardes),
+	)
+
+
+def binariser_jeu(X: pd.DataFrame, binarisation: Binarisation) -> np.ndarray:
+	"""Contexte formel de X avec les attributs gardés ; rien n'est réappris ici."""
+	I_complet, _ = _binariser_complet(X, binarisation.seuils, binarisation.modalites, binarisation.colonnes)
+	return I_complet[:, binarisation.gardes]
+
+
+def _binariser_complet(X, seuils, modalites, colonnes) -> tuple[np.ndarray, list[str]]:
+	blocs, noms = [], []
+	for colonne in colonnes:
+		if colonne in seuils:
+			bloc, noms_bloc = binariser(X[[colonne]], {colonne: seuils[colonne]}, [], echelle="interordinale")
+		elif modalites[colonne]:
+			bloc, noms_bloc = binariser_categoriel(X[[colonne]], {colonne: modalites[colonne]})
+		else:
+			continue
+		blocs.append(bloc)
+		noms += noms_bloc
+	return np.column_stack(blocs), noms

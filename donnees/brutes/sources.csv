@@ -1,0 +1,20 @@
+jeu,source,id_openml,nom_openml,version,licence,url,date_telechargement
+anneal,OpenML anneal version 1,2,anneal,1,Public,https://www.openml.org/data/get_csv/1666876/anneal.csv,2026-11-16
+breast-w,OpenML breast-w version 1,15,breast-w,1,Public,https://www.openml.org/data/get_csv/52350/breast-w.csv,2026-11-16
+hepatitis,OpenML hepatitis version 1,55,hepatitis,1,Public,https://www.openml.org/data/get_csv/55/hepatitis.csv,2026-11-16
+colic,OpenML colic version 2,27,colic,2,Public,https://www.openml.org/data/get_csv/27/colic.csv,2026-11-16
+iris,OpenML iris version 1,61,iris,1,Public,https://www.openml.org/data/get_csv/61/iris.csv,2026-11-16
+led7,OpenML led7 version 1,40678,led7,1,public,https://www.openml.org/data/get_csv/4965253/led7.csv,2026-11-16
+mushroom,OpenML mushroom version 1,24,,1,,,2026-10-28
+nursery,OpenML nursery version 1,26,nursery,1,Public,https://www.openml.org/data/get_csv/26/nursery.csv,2026-11-16
+page-blocks,OpenML page-blocks version 1,30,page-blocks,1,Public,https://www.openml.org/data/get_csv/30/page-blocks.csv,2026-11-16
+pima,miroir GitHub UCI (J. Brownlee),37,,1,,,2026-10-21
+wine,OpenML wine version 1,187,wine,1,Public,https://www.openml.org/data/get_csv/3624/wine.csv,2026-11-16
+balance-scale,OpenML balance-scale version 1,11,balance-scale,1,Public,https://www.openml.org/data/get_csv/11/balance-scale.csv,2026-11-16
+breast-cancer,OpenML breast-cancer version 1,13,breast-cancer,1,Public,https://www.openml.org/data/get_csv/13/breast-cancer.csv,2026-11-16
+credit-approval,OpenML credit-approval version 1,29,credit-approval,1,Public,https://www.openml.org/data/get_csv/29/credit-approval.csv,2026-11-16
+glass,OpenML glass version 1,41,glass,1,Public,https://www.openml.org/data/get_csv/41/glass.csv,2026-11-16
+heart-statlog,OpenML heart-statlog version 1,53,heart-statlog,1,Public,https://www.openml.org/data/get_csv/53/heart-statlog.csv,2026-11-16
+vowel,OpenML vowel version 2,307,vowel,2,Public,https://www.openml.org/data/get_csv/52210/vowel.csv,2026-11-16
+zoo,OpenML zoo version 1,62,zoo,1,Public,https://www.openml.org/data/get_csv/52352/zoo.csv,2026-11-16
+vote,OpenML vote version 1,56,,1,,,2026-10-28
