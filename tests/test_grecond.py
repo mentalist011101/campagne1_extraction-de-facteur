@@ -146,3 +146,25 @@ def test_choix_sur_egalite_sans_consequence():
 	assert len(choix) == 1
 	assert choix[0].attributs_a_egalite == [0, 1]
 	assert not choix[0].fermetures_differentes
+
+
+# --- Campagne 1, étape 5 : limite de temps ---
+
+from m2_facteurs.grecond import DelaiDepasse
+
+
+def test_delai_none_ne_change_rien():
+	I = np.random.default_rng(0).random((30, 8)) < 0.4
+	sans = grecond(I).facteurs
+	avec = grecond(I, delai_max_s=None).facteurs
+	assert len(sans) == len(avec)
+	for a, b in zip(sans, avec):
+		assert np.array_equal(a.extension, b.extension) and np.array_equal(a.intention, b.intention)
+
+
+def test_delai_zero_leve_delai_depasse_apres_le_premier_facteur():
+	I = np.random.default_rng(0).random((30, 8)) < 0.4
+	with pytest.raises(DelaiDepasse) as erreur:
+		grecond(I, delai_max_s=0)
+	assert erreur.value.nb_facteurs == 1
+	assert erreur.value.duree_s >= 0

@@ -1,0 +1,26 @@
+# Campagne 1 : docs/instructions_campagne1.md ; décisions et hypothèses : DECISIONS.md.
+jeux:
+  - anneal
+  - breast-w
+  - hepatitis
+  - colic
+  - iris
+  - led7
+  - mushroom
+  - nursery
+  - page-blocks
+  - pima
+  - wine
+  - balance-scale
+  - breast-cancer
+  - credit-approval
+  - glass
+  - heart-statlog
+  - vowel
+  - zoo
+  - vote
+methodes: [MAJ, M3-AV, M3-BV, STACK, LR, RF, NB, BAG]
+graine: 42
+nb_sacs: 25
+delai_grecond_s: 1200
+dossier_resultats: resultats/campagne1

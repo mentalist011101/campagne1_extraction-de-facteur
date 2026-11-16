@@ -9,12 +9,23 @@ data via a novel method of matrix decomposition », JCSS 76(1), 2010.
 Fonctionne sur n'importe quel contexte binaire (échantillon, sous-ensemble d'attributs…).
 """
 
+import time
 from dataclasses import dataclass
 
 import numpy as np
 
 from m2_facteurs.factorisation import PasTrace, ResultatFactorisation, construire_resultat
 from m2_facteurs.fca import Concept, extension, intention
+
+
+class DelaiDepasse(Exception):
+	"""GreConD a dépassé delai_max_s (vérifié après chaque facteur) ; numero_sac renseigné par le bagging."""
+
+	def __init__(self, duree_s: float, nb_facteurs: int, numero_sac: int | None = None):
+		super().__init__(f"GreConD : {duree_s:.0f} s après {nb_facteurs} facteurs")
+		self.duree_s = duree_s
+		self.nb_facteurs = nb_facteurs
+		self.numero_sac = numero_sac
 
 
 @dataclass(frozen=True)
@@ -34,11 +45,14 @@ def grecond(
 	couverture_cible: float = 1.0,
 	nb_max_facteurs: int | None = None,
 	trace: bool = False,
+	delai_max_s: float | None = None,
 ) -> ResultatFactorisation:
 	"""Construit les facteurs un par un jusqu'à couverture ≥ couverture_cible ou nb_max_facteurs atteint.
 
 	Avec trace=True, chaque pas (valeur de chaque attribut candidat) est enregistré.
+	Avec delai_max_s, DelaiDepasse est levée si la durée le dépasse après un facteur.
 	"""
+	debut = time.perf_counter()
 	non_couvertes = I.copy()
 	total_croix = int(I.sum())
 	facteurs: list[Concept] = []
@@ -51,6 +65,9 @@ def grecond(
 		croix_nouvelles.append(compte)
 		# Pas 4 : les croix du rectangle du facteur sont désormais couvertes
 		non_couvertes[np.ix_(facteur.extension, facteur.intention)] = False
+		duree = time.perf_counter() - debut
+		if delai_max_s is not None and duree > delai_max_s:
+			raise DelaiDepasse(duree, len(facteurs))
 
 		couverture = sum(croix_nouvelles) / total_croix
 		if couverture >= couverture_cible:

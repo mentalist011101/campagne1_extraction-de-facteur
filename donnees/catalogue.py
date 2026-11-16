@@ -11,12 +11,15 @@ Factorization Under Supervised Settings », ICFCA 2019.
 
 import hashlib
 import json
+import warnings
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 from urllib.request import urlopen
 
+import numpy as np
 import pandas as pd
+from sklearn.model_selection import StratifiedKFold
 
 from donnees.pima import COLONNES_ZERO_MANQUANT
 
@@ -26,6 +29,7 @@ CHEMIN_VARIABLES = DOSSIER_BRUTES / "variables.csv"
 CHEMIN_SOURCES = DOSSIER_BRUTES / "sources.csv"
 CHEMIN_CATALOGUE = DOSSIER_DONNEES / "catalogue.csv"
 CHEMIN_TABLE1 = DOSSIER_DONNEES / "table1_makhalova_trnecka.csv"
+DOSSIER_PLIS = DOSSIER_DONNEES / "decoupages" / "campagne1"
 API_OPENML = "https://www.openml.org/api/v1/json"
 SEUIL_CLASSE_RARE = 10
 MAX_VALEURS_CATEGORIELLE = 5
@@ -153,6 +157,46 @@ def ecrire_catalogue() -> None:
 			ligne |= _comparer_table1(table1.loc[jeu.nom], effectifs)
 		lignes.append(ligne)
 	pd.DataFrame(lignes).convert_dtypes().to_csv(CHEMIN_CATALOGUE, index=False)
+
+
+class PlisInvalides(Exception):
+	"""Le fichier de plis figés ne correspond plus au jeu (nombre de lignes, indices ou classes)."""
+
+
+def figer_plis_campagne1(noms: list[str] | None = None, dossier: Path = DOSSIER_PLIS) -> None:
+	"""10 plis stratifiés (random_state=42) sur chaque jeu entier, écrits une fois pour toutes."""
+	dossier.mkdir(parents=True, exist_ok=True)
+	for nom in noms or [jeu.nom for jeu in JEUX]:
+		chemin = dossier / f"{nom}.csv"
+		if chemin.exists():
+			raise FileExistsError(f"{chemin} existe déjà : les plis ne sont jamais régénérés.")
+		X, y = charger_jeu(nom)
+		decoupeur = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+		with warnings.catch_warnings(record=True) as avertissements:
+			warnings.simplefilter("always")
+			decoupage = list(decoupeur.split(X, y))
+		for avertissement in avertissements:
+			print(f"SIGNALÉ {nom} : {avertissement.message}")
+		lignes = [
+			{"indice": int(i), "pli": numero_pli, "classe": y.iloc[i]}
+			for numero_pli, (_, evalues) in enumerate(decoupage) for i in evalues
+		]
+		pd.DataFrame(lignes).to_csv(chemin, index=False)
+
+
+def charger_plis(nom: str, y: pd.Series, dossier: Path = DOSSIER_PLIS) -> list[tuple[np.ndarray, np.ndarray]]:
+	"""Pour chaque pli : (indices de la partie d'apprentissage, indices de la partie évaluée)."""
+	chemin = dossier / f"{nom}.csv"
+	table = pd.read_csv(chemin, dtype={"classe": str}, keep_default_na=False)
+	if sorted(table["indice"]) != list(range(len(y))):
+		raise PlisInvalides(f"{chemin} : {len(table)} lignes, indices différents des {len(y)} objets du jeu")
+	if not (y.iloc[table["indice"]].to_numpy() == table["classe"].to_numpy()).all():
+		raise PlisInvalides(f"{chemin} : classes stockées différentes de celles du jeu")
+	plis = []
+	for numero_pli in sorted(table["pli"].unique()):
+		dans_le_pli = table["pli"] == numero_pli
+		plis.append((np.sort(table.loc[~dans_le_pli, "indice"].to_numpy()), table.loc[dans_le_pli, "indice"].to_numpy()))
+	return plis
 
 
 def _comparer_table1(article: pd.Series, effectifs: pd.Series) -> dict:

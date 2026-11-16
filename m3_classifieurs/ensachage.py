@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from m2_facteurs.grecond import grecond
+from m2_facteurs.grecond import DelaiDepasse, grecond
 from m3_classifieurs.classifieur_factoriel import compter, construire_regles, departager, predire
 
 
@@ -48,8 +48,12 @@ def bagging_m3(
 	classe_par_defaut,
 	nb_sacs: int = 25,
 	graine_base: int = 42,
+	delai_max_s: float | None = None,
 ) -> ResultatBagging:
-	"""B sacs, un M3 (best-vote + précision) par sac, agrégation par vote majoritaire."""
+	"""B sacs, un M3 (best-vote + précision) par sac, agrégation par vote majoritaire.
+
+	DelaiDepasse (avec le numéro du sac) si le GreConD d'un sac dépasse delai_max_s.
+	"""
 	y_app = np.asarray(y_app)
 	predictions_par_sac = []
 	non_couverts_par_sac = []
@@ -58,7 +62,10 @@ def bagging_m3(
 		debut = time.perf_counter()
 		indices = tirer_sac(len(y_app), numero_sac, graine_base)
 		I_sac, y_sac = I_app[indices], y_app[indices]
-		facteurs = grecond(I_sac).facteurs
+		try:
+			facteurs = grecond(I_sac, delai_max_s=delai_max_s).facteurs
+		except DelaiDepasse as erreur:
+			raise DelaiDepasse(erreur.duree_s, erreur.nb_facteurs, numero_sac) from erreur
 		regles, ecartes = construire_regles(facteurs, y_sac, I_sac, y_sac, mesure="precision")
 		predictions = predire(regles, I_eval, classes, classe_par_defaut, vote="best-vote")
 		predictions_par_sac.append([p.classe for p in predictions])
