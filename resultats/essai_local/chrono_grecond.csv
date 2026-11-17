@@ -1,0 +1,6 @@
+jeu,pli,n_app,nb_attributs,densite,nb_facteurs,temps_grecond_s,depasse_limite,estimation_jeu_s,a_risque,machine,commit,modifications_non_commitees
+mushroom,0,7311,109,0.1895,118,35.056,False,9114.56,False,"Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",b831853d3580c7782440dc718ced2629a66d3667,False
+nursery,0,11664,27,0.2963,27,0.996,False,258.96000000000004,False,"Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",b831853d3580c7782440dc718ced2629a66d3667,False
+page-blocks,0,4925,40,0.5,79,11.095,False,2884.7000000000003,False,"Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",b831853d3580c7782440dc718ced2629a66d3667,False
+led7,0,2880,14,0.5,26,0.982,False,255.32,False,"Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",b831853d3580c7782440dc718ced2629a66d3667,False
+anneal,0,808,66,0.2322,78,5.591,False,1453.66,False,"Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",b831853d3580c7782440dc718ced2629a66d3667,False
