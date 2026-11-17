@@ -1,0 +1,11 @@
+# Campagne 1, étape 6 : essai local sur trois petits jeux, mêmes réglages que campagne1.yaml.
+# Écrit dans resultats/essai_local/, jamais dans resultats/campagne1/.
+jeux:
+  - iris
+  - wine
+  - zoo
+methodes: [MAJ, M3-AV, M3-BV, STACK, LR, RF, NB, BAG]
+graine: 42
+nb_sacs: 25
+delai_grecond_s: 1200
+dossier_resultats: resultats/essai_local
