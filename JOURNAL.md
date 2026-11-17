@@ -150,3 +150,10 @@
 ## 2026-11-16 — Campagne 1, étape 4 : hypothèses H8 à H10
 - **Fait :** H8 (stacking contre M3-BV), H9 (bagging contre M3-BV), H10 (non-infériorité du stacking face à la forêt aléatoire) et les règles d'analyse (unité = jeu, au moins 15 jeux terminés, Wilcoxon scipy par défaut, Holm sur H8 et H9, bootstrap pour H10, Friedman et Nemenyi descriptifs) écrits dans `DECISIONS.md`, avant toute exécution de la campagne.
 - **Ordre des étapes modifié :** 5 (script de campagne), 6 (essai local sur iris, wine, zoo), 6 bis (script d'analyse, testé sur l'essai local et commité avant le lancement), 7 (notebook Kaggle et lancement), 8 (exécution de l'analyse sans modification et tableau final).
+
+## 2026-11-16 — Campagne 1, étape 5 : script de campagne, reprise et plis figés
+- **Fait :** `experiences/campagne1.py` (`lancer`, `calculer_pli`, `assembler`) et `experiences/campagne1.yaml` ; `delai_max_s` et `DelaiDepasse` dans GreConD, transmis par le bagging avec le numéro du sac ; `figer_plis_campagne1` et `charger_plis` (vérification du nombre de lignes, des indices et des classes) ; plis figés des 19 jeux dans `donnees/decoupages/campagne1/` ; PyYAML 6.0.3 ajouté à `requirements.txt`. 2 tests ajoutés à `tests/test_grecond.py`, 9 dans `tests/test_campagne1.py` (marqués `lent`).
+- **Vérifications :** suite courante 132 tests, suite `-m lent` 53 tests (3 min 25 s). Reprise testée (arrêt après 2 plis, relance : 8 calculés, 2 sautés, fichiers inchangés) ; abandon du jeu, abandon de BAG seul, statuts et traçabilité testés.
+- **Signalé :** à la création des plis, sklearn avertit que la plus petite classe a moins de 10 objets pour anneal (8), nursery (2), glass (9) et zoo (4) ; rien n'est changé.
+- **Déjà vu, à déclarer :** en démonstration de la commande, iris pli 0 avec les 8 méthodes : MAJ 0,167 de F1 macro ; M3-AV, M3-BV, STACK, RF, NB et BAG 0,933 ; LR 1,000. À l'étape 3, seules les méthodes factorielles avaient été vues sur ce pli.
+- **Noté pour l'étape 6 bis :** le script d'analyse signalera tout pli marqué `modifications_non_commitees = True`, et tout écart de commit ou de versions entre les plis.
