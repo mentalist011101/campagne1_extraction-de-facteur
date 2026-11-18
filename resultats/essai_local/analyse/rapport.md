@@ -1,9 +1,9 @@
 # Campagne 1 : analyse
 
 - Résultats analysés : `resultats/essai_local`
-- Script d'analyse : commit `2af997c34ec0f34eb0c8174b3fb1a5f6673c5c71`, modifications non commitées : True
+- Script d'analyse : commit `b5f595fa4d4cb1d04ea9f0ecea167a741faeebac`, modifications non commitées : False
 - Versions : scipy 1.18.1, numpy 2.5.0, pandas 3.0.3
-- Date de l'analyse : 2026-11-18T10:51:26
+- Date de l'analyse : 2026-11-18T12:07:25
 
 **Campagne non concluante (3 jeux terminés < 15).** H8 à H10 ne reçoivent pas de verdict ; seuls les résultats descriptifs sont rapportés (DECISIONS.md).
 
