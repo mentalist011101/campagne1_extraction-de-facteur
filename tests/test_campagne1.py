@@ -142,7 +142,7 @@ def test_assemblage_et_statuts(tmp_path):
 
 def test_configuration_de_la_campagne():
 	config = campagne1.lire_config(campagne1.RACINE / "experiences" / "campagne1.yaml")
-	assert config.jeux == [jeu.nom for jeu in JEUX]
+	assert sorted(config.jeux) == sorted(jeu.nom for jeu in JEUX)
 	assert config.methodes == METHODES
 	assert (config.graine, config.nb_sacs, config.delai_grecond_s) == (42, 25, 1200.0)
 	assert config.dossier_resultats == campagne1.RACINE / "resultats" / "campagne1"

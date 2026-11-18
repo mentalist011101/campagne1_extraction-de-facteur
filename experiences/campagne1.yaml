@@ -1,24 +1,26 @@
 # Campagne 1 : docs/instructions_campagne1.md ; décisions et hypothèses : DECISIONS.md.
+# Ordre des jeux (DECISIONS.md, 2026-11-18) : petits jeux par n × p croissant, puis les cinq grands par
+# temps de GreConD chronométré (étape 6), mushroom en dernier. L'ordre ne change aucun résultat.
 jeux:
-  - anneal
-  - breast-w
-  - hepatitis
-  - colic
   - iris
-  - led7
-  - mushroom
-  - nursery
-  - page-blocks
-  - pima
+  - zoo
+  - glass
   - wine
   - balance-scale
   - breast-cancer
-  - credit-approval
-  - glass
+  - hepatitis
   - heart-statlog
-  - vowel
-  - zoo
+  - pima
+  - breast-w
   - vote
+  - colic
+  - credit-approval
+  - vowel
+  - led7
+  - nursery
+  - anneal
+  - page-blocks
+  - mushroom
 methodes: [MAJ, M3-AV, M3-BV, STACK, LR, RF, NB, BAG]
 graine: 42
 nb_sacs: 25

@@ -20,7 +20,7 @@ Phase en cours : **phase 1**, M1 (binarisation), M2 (GreCon, GreConD) et M3 (cla
 ## Commandes
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # calcul et tests (requirements.txt : calcul seul, utilisé sur Kaggle)
 python -m pytest -q
 python -m experiences.<script>
 ```

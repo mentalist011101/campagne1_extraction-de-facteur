@@ -81,7 +81,7 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 
 ## Conventions de code
 
-- Python 3.10 ou plus récent ; numpy, pandas, scikit-learn, pytest. Les versions sont notées dans `requirements.txt`.
+- Python 3.10 ou plus récent ; numpy, pandas, scikit-learn, pytest. Les versions sont notées dans `requirements.txt` (calcul seul, installé sur Kaggle) et `requirements-dev.txt` (outils de test : pytest, fcapy).
 - Noms et commentaires en français. Fonctions courtes et pures quand c'est possible. Pas d'optimisation prématurée.
 - Contexte formel : matrice numpy booléenne (objets × attributs). Ensembles d'objets et d'attributs : masques booléens.
 - Chaque algorithme cite sa référence dans la docstring du module.
@@ -93,7 +93,7 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 ## Commandes
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-dev.txt  # calcul et tests ; requirements.txt seul pour le calcul (Kaggle)
 python -m pytest -q                  # tous les tests (115, environ 1 minute)
 python -m pytest -q -p no:warnings   # idem, sans les avertissements de skmine (dépendance de fcapy)
 python -m pytest -q -m lent           # tests du catalogue de la campagne 1 (44, environ 30 s)
