@@ -234,6 +234,13 @@ def _statut(dossier: Path, du_jeu: pd.DataFrame) -> str:
 	return "termine"
 
 
+def modifications_non_commitees(racine: Path = RACINE) -> bool:
+	"""Fichiers suivis modifiés par rapport au commit. Les fichiers non suivis (résultats écrits par la
+	campagne, y compris lors d'une reprise sur Kaggle) sont ignorés ; limite : un nouveau fichier de code
+	non suivi n'est pas détecté non plus."""
+	return _git(["status", "--porcelain", "--untracked-files=no"], racine) not in ("", None)
+
+
 def _nb_convergence(avertissements) -> int:
 	return sum(issubclass(a.category, ConvergenceWarning) for a in avertissements)
 
@@ -248,16 +255,16 @@ def _ecrire_atomique(table: pd.DataFrame, chemin: Path) -> None:
 def _decrire_machine() -> dict:
 	return {
 		"commit": _git(["rev-parse", "HEAD"]) or "inconnu",
-		"modifications_non_commitees": _git(["status", "--porcelain"]) not in ("", None),
+		"modifications_non_commitees": modifications_non_commitees(),
 		"version_python": platform.python_version(), "version_numpy": np.__version__,
 		"version_pandas": pd.__version__, "version_sklearn": sklearn.__version__,
 		"processeur": platform.processor() or platform.machine(), "plateforme": platform.platform(),
 	}
 
 
-def _git(arguments: list[str]) -> str | None:
+def _git(arguments: list[str], racine: Path = RACINE) -> str | None:
 	try:
-		sortie = subprocess.run(["git", *arguments], cwd=RACINE, capture_output=True, text=True, timeout=10)
+		sortie = subprocess.run(["git", *arguments], cwd=racine, capture_output=True, text=True, timeout=10)
 	except (OSError, subprocess.TimeoutExpired):
 		return None
 	return sortie.stdout.strip() if sortie.returncode == 0 else None

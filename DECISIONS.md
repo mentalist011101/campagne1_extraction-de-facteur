@@ -180,3 +180,10 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Avertissements de convergence** de LR et STACK : comptés par pli et par méthode, jamais masqués.
 - **Fichiers de sortie** sans date dans le nom : `resultats/campagne1/<jeu>/pli_<k>.csv`, `campagne1_par_pli.csv`, `campagne1_par_jeu.csv` (la campagne peut s'étaler sur plusieurs sessions). Écriture atomique (fichier temporaire puis renommage) : une coupure ne laisse jamais un pli pris à tort pour terminé.
 - **Raison :** décisions de l'étudiant du 2026-11-16 (plan de l'étape 5).
+
+## 2026-11-17 — Campagne 1, étape 6 : drapeau `modifications_non_commitees`
+- **Calcul :** `git status --porcelain --untracked-files=no` (fonction `modifications_non_commitees`) : le drapeau ne regarde que les fichiers suivis par Git. Avant, les fichiers non suivis comptaient aussi.
+- **Raison :** sur Kaggle, une reprise trouve dans le clone les résultats des sessions précédentes, non suivis ; avec l'ancienne commande, tous les plis repris auraient porté le drapeau alors que le code n'avait pas changé. Observé localement à l'étape 6 : le premier chronométrage, lancé juste après l'essai, portait le drapeau à cause de `resultats/essai_local/` (refait sur un dépôt propre, commit f8b590e).
+- **Limite :** un nouveau fichier de code non suivi n'est pas détecté. Risque faible : Kaggle part d'un clone propre du dépôt.
+- **Les plis de l'essai local** (commit 0191db7) ont été calculés avec l'ancienne commande, sur un dépôt propre : leur drapeau (False) reste valable.
+- **Raison du choix :** décision de l'étudiant du 2026-11-17.
