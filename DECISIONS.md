@@ -187,3 +187,13 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Limite :** un nouveau fichier de code non suivi n'est pas détecté. Risque faible : Kaggle part d'un clone propre du dépôt.
 - **Les plis de l'essai local** (commit 0191db7) ont été calculés avec l'ancienne commande, sur un dépôt propre : leur drapeau (False) reste valable.
 - **Raison du choix :** décision de l'étudiant du 2026-11-17.
+
+## 2026-11-18 — Campagne 1, étape 6 bis : précisions de mise en œuvre de l'analyse (critères inchangés)
+- **Tirage du bootstrap (H10) :** `rng = np.random.default_rng(42)`, puis `rng.integers(0, N, size=(10_000, N))` en un seul appel (une ligne par tirage, N = nombre de jeux retenus) ; moyennes par ligne ; bornes `np.percentile(moyennes, [2.5, 97.5])`. Ce détail fixe les nombres exacts de l'intervalle.
+- **Mode `auto` de Wilcoxon dans scipy 1.18.1 (vérifié dans le code source) :** approximation normale si len(d) > 50 ; sinon calcul exact s'il n'y a ni ex-aequo ni d nulle ; sinon permutations exhaustives si len(d) ≤ 13, approximation normale au-delà. Avec 15 à 19 jeux, un seul ex-aequo ou une seule d nulle fait donc passer à l'approximation normale. Version de scipy fixée dans `requirements.txt` et écrite dans le rapport.
+- **Toutes les d nulles :** scipy renvoie p = NaN ; rapporté « p non défini, hypothèse rejetée (aucune différence) » ; ce p reste non défini dans la correction de Holm.
+- **Égalité d'un jeu (victoires / défaites / égalités) :** d exactement nulle, comme pour le retrait des zéros par scipy.
+- **Cohérence des fichiers :** les F1 par jeu sont recalculées depuis `campagne1_par_pli.csv` ; un écart de plus de 1e-12 avec `campagne1_par_jeu.csv` arrête l'analyse.
+- **Anomalies de traçabilité** (pli `modifications_non_commitees = True`, plusieurs commits, plusieurs versions de Python, numpy, pandas ou scikit-learn) : signalées en tête du rapport, non bloquantes, aucun pli exclu. Processeurs et plateformes : listés.
+- **Table 3 :** iris, mushroom, pima, wine ; seules les cases de même configuration que la campagne (poids par précision, accuracy, all-votes → M3-AV, best-vote → M3-BV) sont comparées ; comparaison indicative (protocole et binarisation différents). Fichier absent : le rapport le dit et continue.
+- **Raison :** décisions de l'étudiant du 2026-11-18 (plan de l'étape 6 bis).

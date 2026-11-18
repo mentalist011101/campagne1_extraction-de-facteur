@@ -4,4 +4,5 @@ scikit-learn==1.9.0
 pytest==9.1.1
 fcapy==0.1.4.5
 scipy==1.18.1
+matplotlib==3.11.2
 PyYAML==6.0.3
