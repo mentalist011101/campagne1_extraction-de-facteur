@@ -232,7 +232,7 @@ def ecrire_rapport(dossier, retenus, exclus, anomalies, machines, hypotheses, f1
 	n = len(retenus)
 	lignes = [
 		"# Campagne 1 : analyse", "",
-		f"- Résultats analysés : `{dossier}`",
+		f"- Résultats analysés : `{_chemin_relatif(dossier)}`",
 		f"- Script d'analyse : commit `{_git(['rev-parse', 'HEAD']) or 'inconnu'}`, modifications non commitées : "
 		f"{modifications_non_commitees()}",
 		f"- Versions : scipy {scipy.__version__}, numpy {np.__version__}, pandas {pd.__version__}",
@@ -295,6 +295,14 @@ def _resume(d: pd.Series) -> dict:
 	return {"n_jeux": len(d), "n_effectifs": int((d != 0).sum()), "mediane_d": float(d.median()),
 		"moyenne_d": float(d.mean()), "victoires": int((d > 0).sum()), "defaites": int((d < 0).sum()),
 		"egalites": int((d == 0).sum())}
+
+
+def _chemin_relatif(dossier: Path) -> str:
+	"""Chemin relatif à la racine du dépôt : le rapport commité ne contient aucun chemin local."""
+	dossier = Path(dossier).resolve()
+	if dossier.is_relative_to(RACINE.resolve()):
+		return dossier.relative_to(RACINE.resolve()).as_posix()
+	return dossier.name
 
 
 def _raison(dossier: Path, statut: str, nb_plis: int) -> str:

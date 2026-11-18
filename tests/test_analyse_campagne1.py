@@ -58,6 +58,8 @@ def test_essai_local_non_concluant(tmp_path):
 	for fichier in ["f1_par_jeu.csv", "rangs.csv", "jeux_exclus.csv", "tracabilite.csv", "diagramme_cd.png"]:
 		assert (tmp_path / fichier).exists(), fichier
 	assert "F1 macro par jeu" in rapport and "Friedman" in rapport
+	assert "Résultats analysés : `resultats/essai_local`" in rapport
+	assert "C:\\" not in rapport and "Users" not in rapport
 
 
 @pytest.mark.lent
