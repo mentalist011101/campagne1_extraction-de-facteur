@@ -1,0 +1,22 @@
+# T. Makhalova, M. Trnecka, « A Study of Boolean Matrix Factorization Under Supervised Settings », ICFCA 2019, LNAI 11511, p. 341-348.
+# Table 3 : « The average accuracy of classifier ensembles », recopiée du PDF.
+# Les cases « a/b » ne sont pas expliquées pour la Table 3 ; la légende de la Table 2 dit « training/test » :
+# a = apprentissage, b = test, par déduction. Algorithme de factorisation non précisé dans la section 4.2.
+# Colonne valeur = valeur_test : lue par experiences/analyse_campagne1.py (format fixé à l'étape 6 bis, script non modifié).
+jeu,vote,ponderation,mesure,valeur_apprentissage,valeur_test,valeur,algorithme,note
+iris,all-votes,precision,accuracy,0.84,0.82,0.82,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+iris,all-votes,accuracy,accuracy,0.84,0.82,0.82,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+iris,best-vote,precision,accuracy,0.84,0.82,0.82,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+iris,best-vote,accuracy,accuracy,0.84,0.82,0.82,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+mushroom,all-votes,precision,accuracy,0.93,0.93,0.93,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+mushroom,all-votes,accuracy,accuracy,0.89,0.89,0.89,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+mushroom,best-vote,precision,accuracy,0.99,0.99,0.99,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+mushroom,best-vote,accuracy,accuracy,0.88,0.88,0.88,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+pima,all-votes,precision,accuracy,0.66,0.66,0.66,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+pima,all-votes,accuracy,accuracy,0.67,0.66,0.66,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+pima,best-vote,precision,accuracy,0.72,0.70,0.70,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+pima,best-vote,accuracy,accuracy,0.73,0.73,0.73,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+wine,all-votes,precision,accuracy,0.77,0.75,0.75,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+wine,all-votes,accuracy,accuracy,0.76,0.75,0.75,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+wine,best-vote,precision,accuracy,0.79,0.75,0.75,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
+wine,best-vote,accuracy,accuracy,0.76,0.75,0.75,non précisé,a/b lu comme apprentissage/test (déduit de la légende de la Table 2)
