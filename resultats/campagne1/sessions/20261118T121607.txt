@@ -1,0 +1,17 @@
+date: 2026-11-18T12:16:07
+configuration: experiences/campagne1.yaml
+commit: 9c85570b501918521e3296cdeaa90e5c87c104bb
+modifications_non_commitees: False
+nb_coeurs: 4
+processeur: Intel(R) Xeon(R) CPU @ 2.20GHz
+memoire_totale: 32869296 kB
+memoire_disponible: 31550956 kB
+plateforme: Linux-6.18.55+-x86_64-with-glibc2.39
+python: 3.13.18
+version_numpy: 2.5.0
+version_pandas: 3.0.3
+version_scikit-learn: 1.9.0
+version_scipy: 1.18.1
+version_matplotlib: 3.11.2
+version_PyYAML: 6.0.3
+ecarts_versions: aucun
