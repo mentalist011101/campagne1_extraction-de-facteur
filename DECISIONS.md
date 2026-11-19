@@ -209,3 +209,9 @@ Ces hypothèses et critères ne seront plus modifiés. Une hypothèse rejetée e
 - **Essai Kaggle :** `experiences/essai_kaggle.yaml` (iris, wine et zoo, les jeux de l'essai local ; mêmes réglages ; sorties dans `resultats/essai_kaggle/`) : d'abord une session courte coupée à 1 min (essai A), puis une reprise par Add Input (essai B), pour tester l'installation, les chemins, l'interruption, la récupération de la sortie et la reprise.
 - **Contrôle descriptif de reproductibilité :** à l'étape 8, un petit script séparé compare les F1 macro d'iris, wine et zoo (par pli et moyennes, 8 méthodes) entre `resultats/essai_local/` (Windows, commit 0191db7) et Kaggle (l'essai Kaggle et la campagne). Les écarts sont rapportés ; rien n'est modifié en conséquence. Le script d'analyse de l'étape 6 bis n'est pas changé.
 - **Raison :** décisions de l'étudiant du 2026-11-18 (plan de l'étape 7).
+
+## 2026-11-19 — Campagne 1, étape 8 : lecture des flottants par `assembler` (limite constatée, code inchangé)
+- **Constat :** `assembler` (`experiences/campagne1.py`) et `experiences/analyse_campagne1.py` lisent les CSV avec le lecteur par défaut de pandas, qui peut s'écarter d'un ulp du flottant écrit. `campagne1_par_pli.csv` diffère ainsi des `pli_k.csv` de 1,1e-16 au plus (350 F1 et 213 accuracies sur 1 520).
+- **Décision :** aucun des deux scripts n'est modifié (l'analyse est figée et a été exécutée sans modification). Les comparaisons exactes (`experiences/descriptif_campagne1.py`) lisent les `pli_k.csv` avec `float_precision="round_trip"`.
+- **Raison :** un écart de 1e-16 ne peut changer aucun verdict : les différences testées sont de l'ordre de 1e-2, la cohérence entre fichiers est vérifiée à 1e-12, et les égalités de H9 et H10 portent sur des chaînes identiques, toujours relues de la même façon. Pour un prochain script : lire avec `float_precision="round_trip"`.
+- **Raison du choix :** décision de l'étudiant du 2026-11-19.
