@@ -22,7 +22,7 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 | M1 | `m1_binarisation/` | Données → contexte formel binaire | terminé : échelle nominale ou interordinale (numérique), binarisation catégorielle (« ? » sans attribut, attributs constants retirés) |
 | M2 | `m2_facteurs/` | I ≈ A ∘ B : GreCon, GreConD (puis éventuellement MDLGreConD) | terminé : GreCon, GreConD, `nb_max` pour l'énumération, comptage des choix sur égalité |
 | M3 | `m3_classifieurs/` | Facteur → règle « intention → classe » avec un poids ; vote all-votes / best-vote | terminé : poids précision, accuracy ou lift, all-votes ou best-vote, `regles_qui_votent` |
-| — | `m3_classifieurs/` | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) | premiers essais : stacking (`empilement.py`), bagging (`ensachage.py`) sur vote |
+| — | `m3_classifieurs/` | Méthodes d'ensemble sur les classifieurs factoriels (axe proposé par l'encadreuse) | campagne 1 terminée (19 jeux) : H8 et H9 confirmées, H10 rejetée ; stacking (`empilement.py`), bagging (`ensachage.py`) |
 | M4 | (à venir) | Modèle profond, d'abord un MLP pour le tabulaire. Jamais modifié par la chaîne. | à venir |
 | M5 | (à venir) | Verdict sur ŷ(x) : confirmée, contestée ou inconnue, puis un score | à venir |
 | M6 | (à venir) | Explication : facteurs qui soutiennent ŷ, facteurs qui s'y opposent | à venir |
@@ -32,7 +32,7 @@ données ─► M1 binarisation ─► M2 facteurs ─► M3 classifieurs factor
 
 **Phase 1 terminée ; phase 2 terminée pour les étapes 10 à 14 (H1 confirmée, H2 et H3 rejetées, H4 confirmée) ; phase 3 légère terminée (H5 et H6 rejetées, H7 confirmée). Reste : étape 15 (synthèse de la phase 2), après la présentation.**
 Détails : `JOURNAL.md`. Instructions : `docs/instructions_phase2.md` ; phase 3 : `docs/instructions_phase3_ensembles.md` (jeu de données : voir `DECISIONS.md`). Le test reste scellé sur tous les jeux.
-**Campagne 1 en cours** (méthodes d'ensemble sur 19 jeux, H8 à H10) : `docs/instructions_campagne1.md`. Pas de test scellé dans cette campagne : validation croisée à 10 plis sur le jeu entier, sans réglage (voir `DECISIONS.md`).
+**Campagne 1 terminée** (méthodes d'ensemble sur 19 jeux, validation croisée à 10 plis sur Kaggle) : H8 et H9 confirmées, H10 rejetée. Détails : `JOURNAL.md` (étapes 6 à 8), `resultats/campagne1/analyse/rapport.md`. Instructions : `docs/instructions_campagne1.md`. Pas de test scellé dans cette campagne : validation croisée à 10 plis sur le jeu entier, sans réglage (voir `DECISIONS.md`).
 Ne code rien qui appartienne à une phase suivante.
 
 ## Comment on travaille
@@ -72,12 +72,14 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 - **Hypothèses avant expériences.** Toute hypothèse et son critère sont commités dans `DECISIONS.md` avant la première expérience qui la teste, puis ne sont plus modifiés.
 - **Validation croisée figée par jeu.** Chaque jeu a son découpage 60/20/20 et ses 10 plis figés dans `donnees/decoupages/`. Dans chaque pli, tout est réappris sur sa partie d'apprentissage : binarisation, facteurs, poids, modèles.
 - **Données figées, au-delà de Pima :** `donnees/mushroom.csv` et `donnees/vote.csv`, lus uniquement depuis ces copies. Pour vote, « ? » = abstention réelle, sans attribut (limite connue).
+- **Données figées, campagne 1 :** les 19 jeux du catalogue, lus uniquement par `donnees/catalogue.py` depuis leurs copies figées (`donnees/brutes/`, et `donnees/pima.csv`, `donnees/mushroom.csv`, `donnees/vote.csv`). Les plis de la campagne sont dans `donnees/decoupages/campagne1/`.
 - **Graine fixe** : `random_state=42` partout.
 
 ## Leçons de méthode
 
 - Un critère « au moins 8 plis sur 10 » doit tenir compte de la taille des plis (sur vote, un représentant ≈ 0,03 de F1) ; on donne aussi le test du signe, à titre descriptif. Les critères déjà figés ne sont pas modifiés.
 - Les critères de structure des facteurs se formulent en variables distinctes, pas en attributs (la fermeture interordinale ajoute les attributs impliqués, étape 12).
+- Pour une comparaison exacte de flottants relus d'un CSV, lire avec `float_precision="round_trip"` : le lecteur par défaut de pandas peut s'écarter d'un ulp.
 
 ## Conventions de code
 
@@ -94,12 +96,15 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 
 ```bash
 pip install -r requirements-dev.txt  # calcul et tests ; requirements.txt seul pour le calcul (Kaggle)
-python -m pytest -q                  # tous les tests (115, environ 1 minute)
+python -m pytest -q                  # suite courante (154, environ 40 s)
 python -m pytest -q -p no:warnings   # idem, sans les avertissements de skmine (dépendance de fcapy)
-python -m pytest -q -m lent           # tests du catalogue de la campagne 1 (44, environ 30 s)
+python -m pytest -q -m lent           # tests lents : catalogue et campagne 1 (68, environ 2 min)
 python -m experiences.<script>       # une expérience
 python -m experiences.cv_ensembles_vote   # phase 3 : stacking et bagging (environ 2 min)
 python -m experiences.synthese_vote       # phase 3 : tableau final et verdicts
+python -m experiences.campagne1 --config experiences/campagne1.yaml   # campagne 1 (Kaggle : kaggle/campagne1.ipynb)
+python -m experiences.analyse_campagne1 --dossier resultats/campagne1  # analyse figée, H8 à H10
+python -m experiences.descriptif_campagne1                            # vérifications descriptives
 ```
 
 ## Fichiers de suivi
