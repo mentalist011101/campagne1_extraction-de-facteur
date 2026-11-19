@@ -46,11 +46,11 @@ L'étudiant décide ; toi, tu proposes, tu expliques et tu codes. Il doit pouvoi
 4. Exécuter et montrer la sortie réelle, pas un résumé.
 5. Expliquer le lien entre le code et l'algorithme.
 6. Attendre « validé ».
-7. Proposer un message de commit (l'étudiant commite), puis ajouter une entrée dans `JOURNAL.md`.
+7. Proposer un message de commit (l'étudiant commite, ou te demande de le faire), puis ajouter une entrée dans `JOURNAL.md`.
 
-**Git : tu ne fais jamais de commit, de push ni de pull request.** Quand une étape est validée, tu me proposes un message de commit, et c'est moi qui commite et qui pousse. N'ajoute jamais de ligne `Co-Authored-By` ni aucune autre mention de toi dans les messages de commit, les fichiers ou le dépôt.
+**Git : tu commites et tu pousses seulement quand je le demande.** Quand une étape est validée, tu me proposes un message de commit. Si je te le demande, tu fais le commit, ou le push, avec ce message ; sinon c'est moi qui le fais. Mon accord vaut pour ce que je demande, pas pour la suite. Jamais de push forcé, de réécriture de l'historique déjà poussé ni de pull request. N'ajoute jamais de ligne `Co-Authored-By` ni aucune autre mention de toi dans les messages de commit, les fichiers ou le dépôt.
 
-**Dépôt GitHub et Kaggle.** Le projet est poussé sur GitHub par moi. Les calculs longs tournent sur Kaggle, qui clone le dépôt. Aucun secret (jeton, mot de passe) n'est écrit dans le code ou dans un notebook : si le dépôt est privé, le jeton passe par les *Kaggle Secrets*.
+**Dépôt GitHub et Kaggle.** Le projet est poussé sur GitHub par moi, ou par toi à ma demande. Les calculs longs tournent sur Kaggle, qui clone le dépôt. Aucun secret (jeton, mot de passe) n'est écrit dans le code ou dans un notebook : si le dépôt est privé, le jeton passe par les *Kaggle Secrets*.
 
 **Règles :**
 - Jamais d'étape suivante sans validation.
